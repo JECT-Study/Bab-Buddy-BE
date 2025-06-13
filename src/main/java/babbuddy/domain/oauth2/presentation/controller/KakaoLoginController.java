@@ -21,8 +21,11 @@ public class KakaoLoginController {
     private final KakaoLoginService KakaoLoginService;
 
     @GetMapping("/callback")
-    public ResponseEntity<LoginToken> login(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        return ResponseEntity.ok(KakaoLoginService.login(code, response));
+    public ResponseEntity<Void>  login(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+        String redirectUrl = KakaoLoginService.login(code, response);
+        return ResponseEntity.status(302)
+                .header(HttpHeaders.LOCATION, redirectUrl)
+                .build();
 
 
     }

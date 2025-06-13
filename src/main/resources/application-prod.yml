@@ -55,6 +55,7 @@ logging:
         web: ERROR
 
 oauth2:
+  front-uri: ${OAUTH2_FRONT_URL}
   base-url: ${OAUTH2_BASE_URL}
   client-name: ${OAUTH2_CLIENT_NAME}
   client-id: ${OAUTH2_CLIENT_ID}
