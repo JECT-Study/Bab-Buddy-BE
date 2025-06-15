@@ -1,4 +1,4 @@
-name: flowfit CI/CD
+name: babbuddy CI/CD
 
 on:
   push:
@@ -38,19 +38,19 @@ jobs:
       # (6) Docker 이미지 빌드
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO_NAME }}:latest .
+          docker build -t ${{ secrets.DOCKERFILE_USERNAME }}/${{ secrets.DOCKERFILE_REPO_NAME }}:latest .
 
       # (7) DockerHub 로그인
       - name: DockerHub Login
         run: |
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          echo "${{ secrets.DOCKERFILE_PASSWORD }}" | docker login -u "${{ secrets.DOCKERFILE_USERNAME }}" --password-stdin
 
       # (8) Docker 이미지 푸시
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO_NAME }}:latest
+          docker push ${{ secrets.DOCKERFILE_USERNAME }}/${{ secrets.DOCKERFILE_REPO_NAME }}:latest
 
-      # (8.5) EC2에 flowfit 디렉토리 생성 (없으면 만들기)
+      # (8.5) EC2에 babbuddy 디렉토리 생성
       - name: Create directory on EC2
         uses: appleboy/ssh-action@master
         with:
@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/flowfit  # 경로가 없으면 만들기
+            mkdir -p /home/ubuntu/babbuddy
 
       # (8.6) docker-compose.yml 파일 EC2로 복사
       - name: Copy docker-compose.yml to EC2
@@ -68,9 +68,9 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "docker-compose.yml"
-          target: "/home/ubuntu/flowfit"
+          target: "/home/ubuntu/babbuddy"
 
-      # (8.7) .env 파일 EC2로 복사 (환경 변수 문제 방지)
+      # (8.7) .env 파일 EC2로 복사
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@master
         with:
@@ -78,7 +78,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "env/prod.env"
-          target: "/home/ubuntu/flowfit/.env"
+          target: "/home/ubuntu/babbuddy/.env"
 
       # (9) SSH로 서버 접속 후 컨테이너 실행
       - name: Deploy to Server
@@ -88,8 +88,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /home/ubuntu/flowfit
+            cd /home/ubuntu/babbuddy
             docker-compose down || true
             docker image prune -a -f
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO_NAME }}:latest
+            docker pull ${{ secrets.DOCKERFILE_USERNAME }}/${{ secrets.DOCKERFILE_REPO_NAME }}:latest
             docker-compose up -d
