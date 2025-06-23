@@ -47,7 +47,7 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
                     .email(oAuth2UserResponse.getEmail())  // 메소드 호출 방식으로 변경
                     .name(oAuth2UserResponse.getName())    // 메소드 호출 방식으로 변경
                     .profile(oAuth2UserResponse.getProfile())  // 메소드 호출 방식으로 변경
-                    .role(Role.MEMBER)
+                    .role(Role.USER)
                     .build();
             userRepository.save(user);
 

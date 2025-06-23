@@ -1,8 +1,10 @@
 package babbuddy.global.infra.exception.auth;
 
 
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import babbuddy.global.infra.exception.ErrorResponse;
+import babbuddy.global.infra.exception.error.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,37 +23,52 @@ public class BabbuddyAuthExceptionFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
-
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         }
-        catch(BabbuddyAuthException e) {
-            handleflowfitAuthException(response, e);
+        catch(BabbuddyException e) {
+            handleFlowException(response, e);
         }
         catch(AuthenticationException e) {
             handleAuthenticationException(response);
         }
+        catch(Exception e) {
+            log.error("Filter에서 예상치 못한 오류 발생", e);
+            handleUnexpectedException(response);
+        }
     }
 
-    private void handleflowfitAuthException(HttpServletResponse response, BabbuddyAuthException e) throws IOException {
-        response.setStatus(e.getStatus().value());
+    private void handleFlowException(HttpServletResponse response, BabbuddyException e) throws IOException {
+        log.error("Filter에서 BabbuddyException 발생 - ErrorCode: {}, Message: {}",
+                e.getErrorCode().getErrorCode(), e.getMessage());
+
+        response.setStatus(e.getHttpStatusCode());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        ErrorResponse errorResponse = ErrorResponse.of(e.getStatus().value(), "FLOWFIT_AUTH_EXCEPTION", e.getMessage());
-
+        ErrorResponse errorResponse = ErrorResponse.of(e);
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
     private void handleAuthenticationException(HttpServletResponse response) throws IOException {
+        log.error("Filter에서 AuthenticationException 발생");
+
         response.setStatus(401);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        ErrorResponse errorResponse = ErrorResponse.of(401, "TEACHMON_AUTH_EXCEPTION", "알 수 없는 인증 오류가 발생했습니다.");
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.UNAUTHORIZED);
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+    }
 
+    private void handleUnexpectedException(HttpServletResponse response) throws IOException {
+        response.setStatus(500);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.SERVER_UNTRACKED_ERROR);
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

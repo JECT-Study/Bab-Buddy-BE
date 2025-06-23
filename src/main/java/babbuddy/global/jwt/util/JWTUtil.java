@@ -2,8 +2,8 @@ package babbuddy.global.jwt.util;
 
 
 import babbuddy.domain.user.domain.entity.Role;
-import babbuddy.global.jwt.util.exception.BabbuddyJWTException;
-import babbuddy.global.jwt.util.exception.BabbuddyJWTExpiredException;
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -41,10 +41,10 @@ public class JWTUtil {
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", String.class);
         }
         catch(ExpiredJwtException e) {
-            throw new BabbuddyJWTExpiredException("JWT 가 만료되었습니다.");
+            throw new BabbuddyException(ErrorCode.JWT_EXPIRE_TOKEN);
         }
         catch(JwtException e) {
-            throw new BabbuddyJWTException("JWT token 로드에 실패했습니다.");
+            throw new BabbuddyException(ErrorCode.JWT_ERROR_TOKEN);
         }
     }
 
@@ -53,10 +53,10 @@ public class JWTUtil {
             return Role.getByValue("ROLE_" + Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class));
         }
         catch(ExpiredJwtException e) {
-            throw new BabbuddyJWTExpiredException("JWT 가 만료되었습니다.");
+            throw new BabbuddyException(ErrorCode.JWT_EXPIRE_TOKEN);
         }
         catch(JwtException e) {
-            throw new BabbuddyJWTException("JWT token 로드에 실패했습니다.");
+            throw new BabbuddyException(ErrorCode.JWT_ERROR_TOKEN);
         }
     }
 

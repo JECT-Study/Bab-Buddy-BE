@@ -1,7 +1,7 @@
 package babbuddy.domain.oauth2.infra.filter;
 
-import babbuddy.domain.oauth2.infra.exception.InvalidRefreshTokenException;
-import babbuddy.domain.oauth2.infra.exception.RefreshTokenNotExistException;
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import babbuddy.global.jwt.domain.entity.JsonWebToken;
 import babbuddy.global.jwt.domain.repository.JsonWebTokenRepository;
 import babbuddy.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
@@ -41,14 +41,15 @@ public class BabbuddyLogoutFilter extends GenericFilterBean {
         String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
 
         if(!jwtUtil.jwtVerify(refreshToken, "refresh")) {
-            throw new InvalidRefreshTokenException();
+            throw new BabbuddyException(ErrorCode.JWT_ERROR_TOKEN);
         }
 
         LogoutProcess(refreshToken, response);
     }
 
     private void LogoutProcess(String refreshToken, HttpServletResponse response) {
-        JsonWebToken jsonWebToken = jsonWebTokenRepository.findById(refreshToken).orElseThrow(RefreshTokenNotExistException::new);
+        JsonWebToken jsonWebToken = jsonWebTokenRepository.findById(refreshToken)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.REFRESH_TOKEN_NOT_EXIST));
 
         KakaoJsonWebTokenRepository.deleteById(jsonWebToken.getProviderId());
         jsonWebTokenRepository.delete(jsonWebToken);
