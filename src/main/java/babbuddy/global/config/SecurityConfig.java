@@ -37,7 +37,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JsonWebTokenRepository jsonWebTokenRepository;
     private final KakaoJsonWebTokenRepository KakaoJsonWebTokenRepository;
-    private final List<String> excludedUrls = Arrays.asList("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/favicon.ico","/api/reissue", "/api/oauth2/login", "/api/healthcheck", "/api/oauth2/callback");
+    private final List<String> excludedUrls = Arrays.asList("/v3/api-docs/**", "/swagger-ui/**","/api/users/restaurants", "/swagger-ui.html","/favicon.ico","/api/reissue", "/api/oauth2/login", "/api/healthcheck", "/api/oauth2/callback");
 
 
     @Bean
@@ -68,7 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/oauth2/callback").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
-                        .requestMatchers("/api/reissue").permitAll()
+                        .requestMatchers("/api/reissue","/api/users/restaurants").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

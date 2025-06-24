@@ -1,15 +1,16 @@
 package babbuddy.domain.user.domain.entity;
 
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import babbuddy.domain.user.infra.exception.InvalidRoleException;
+
 import lombok.Getter;
 
 import java.util.Arrays;
 
 @Getter
 public enum Role {
-    MEMBER("ROLE_MEMBER"),
-    TRAINER("ROLE_TRAINER"),
+    USER("ROLE_USER"),
     ADMIN("ROLE_ADMIN");
     private final String key;
 
@@ -36,6 +37,6 @@ public enum Role {
                 return role;
             }
         }
-        throw new InvalidRoleException(value + "라는 역할이 존재하지 않습니다.");
+        throw new BabbuddyException(ErrorCode.INVALID_ROLE);
     }
 }

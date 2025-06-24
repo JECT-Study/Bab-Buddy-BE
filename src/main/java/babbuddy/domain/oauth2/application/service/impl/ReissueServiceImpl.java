@@ -1,9 +1,9 @@
 package babbuddy.domain.oauth2.application.service.impl;
 
 import babbuddy.domain.oauth2.application.service.ReissueService;
-import babbuddy.domain.oauth2.infra.exception.InvalidRefreshTokenException;
-import babbuddy.domain.oauth2.infra.exception.RefreshTokenNotExistException;
 import babbuddy.domain.user.domain.entity.Role;
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import babbuddy.global.jwt.domain.entity.JsonWebToken;
 import babbuddy.global.jwt.domain.repository.JsonWebTokenRepository;
 import babbuddy.global.jwt.util.JWTUtil;
@@ -30,13 +30,13 @@ public class ReissueServiceImpl implements ReissueService {
 
         if(!jwtUtil.jwtVerify(refreshToken, "refresh")) {
             log.info("Refresh token not valid");
-            throw new InvalidRefreshTokenException();
+            throw new BabbuddyException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         JsonWebToken jsonWebToken = jsonWebTokenRepository.findById(refreshToken).orElse(null);
 
         if(jsonWebToken == null) {
-            throw new RefreshTokenNotExistException();
+            throw new BabbuddyException(ErrorCode.REFRESH_TOKEN_NOT_EXIST);
         }
 
         String userId = jsonWebToken.getProviderId();
