@@ -42,7 +42,7 @@ public class BabbuddyAuthExceptionFilter extends OncePerRequestFilter {
 
     private void handleFlowException(HttpServletResponse response, BabbuddyException e) throws IOException {
         log.error("Filter에서 BabbuddyException 발생 - ErrorCode: {}, Message: {}",
-                e.getErrorCode().getErrorCode(), e.getMessage());
+                e.getErrorCode(), e.getMessage());
 
         response.setStatus(e.getHttpStatusCode());
         response.setContentType("application/json");

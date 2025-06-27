@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BabbuddyException.class)
     public ResponseEntity<ErrorResponse> handleFlowException(BabbuddyException e) {
         log.error("FlowException caught - ErrorCode: {}, Message: {}",
-                e.getErrorCode().getErrorCode(), e.getMessage());
+                e.getErrorCode(), e.getMessage());
         return ResponseEntity
                 .status(e.getHttpStatusCode())
                 .body(ErrorResponse.of(e));
