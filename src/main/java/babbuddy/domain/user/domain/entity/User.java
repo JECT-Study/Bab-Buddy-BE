@@ -2,15 +2,17 @@ package babbuddy.domain.user.domain.entity;
 
 
 
+import babbuddy.domain.allergy.domain.entity.Allergy;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -21,10 +23,11 @@ public class User {
     @Column(unique = true, nullable = false)
     private String id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Allergy> allergies = new ArrayList<>();
+
     @Column(nullable = false)
     private String email;
-
-
 
     // 이름
     @Column(nullable = false)
@@ -41,6 +44,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
 
     @Builder
     public User(String id, String email, String name,

@@ -10,10 +10,11 @@ public class BabbuddyException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public BabbuddyException(ErrorCode errorCode, String customMessage) {
-        super(customMessage);
+    public BabbuddyException(ErrorCode errorCode, String detailMessage) {
+        super(errorCode.getMessage() + " → " + detailMessage);
         this.errorCode = errorCode;
     }
+
 
     public BabbuddyException(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getMessage(), cause);

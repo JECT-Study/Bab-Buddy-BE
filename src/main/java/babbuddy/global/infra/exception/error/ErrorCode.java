@@ -47,6 +47,7 @@ public enum ErrorCode {
     // user
     INVALID_ROLE(-1,"해당 역할이 존재하지 않습니다.", 406),
     USER_NOT_EXIST(-1, "존재하지 않는 유저입니다.", 406),
+    ALLERGY_NOT_EXIST(-1, "존재하지 않는 필드입니다.", 400),
 
     // group
     GROUP_NOT_EXIST(-1, "존재하지 않는 그룹 방입니다.", 400),
