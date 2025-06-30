@@ -2,6 +2,7 @@ package babbuddy.domain.user.domain.entity;
 
 
 
+import babbuddy.domain.food.domain.entity.Food;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -20,6 +23,10 @@ public class User {
     @Id
     @Column(unique = true, nullable = false)
     private String id;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Food> allergies = new ArrayList<>();
+
 
     @Column(nullable = false)
     private String email;

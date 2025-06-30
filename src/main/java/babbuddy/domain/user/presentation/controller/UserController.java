@@ -17,10 +17,6 @@ import java.io.IOException;
 @Slf4j
 public class UserController {
 
-private final UserService userService;
-    @GetMapping("/restaurants")
-    public String getRecommendedRestaurants() {
-        return userService.openai();
-    }
+
 
 }

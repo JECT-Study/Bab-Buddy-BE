@@ -12,13 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import java.util.*;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BabbuddyException.class)
     public ResponseEntity<ErrorResponse> handleFlowException(BabbuddyException e) {
-        log.error("FlowException caught - ErrorCode: {}, Message: {}",
+        log.error("BabbuddyException caught - ErrorCode: {}, Message: {}",
                 e.getErrorCode(), e.getMessage());
         return ResponseEntity
                 .status(e.getHttpStatusCode())
@@ -31,5 +33,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(500)
                 .body(ErrorResponse.of(ErrorCode.SERVER_UNTRACKED_ERROR));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        return ResponseEntity.badRequest().body(errors);
     }
 }
