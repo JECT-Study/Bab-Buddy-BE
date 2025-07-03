@@ -1,8 +1,8 @@
 package babbuddy.domain.user.domain.entity;
 
 
-
 import babbuddy.domain.food.domain.entity.Food;
+import babbuddy.domain.allergy.domain.entity.Allergy;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,13 +25,14 @@ public class User {
     private String id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Food> allergies = new ArrayList<>();
+    private List<Food> foods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Allergy> allergies = new ArrayList<>();
 
 
     @Column(nullable = false)
     private String email;
-
-
 
     // 이름
     @Column(nullable = false)
@@ -58,6 +59,7 @@ public class User {
         this.profile = profile;
         this.role = role;
     }
+
     public void updateNameAndEmailAndProfile(String name, String email, String profile) {
         this.name = name;
         this.email = email;

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,6 +34,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(500)
                 .body(ErrorResponse.of(ErrorCode.SERVER_UNTRACKED_ERROR));
+    }
+
+    // ENUM 클래스 예외 잡을려고 넣었습니다.
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleJsonParseError(HttpMessageNotReadableException e) {
+        Throwable rootCause = e.getRootCause();
+        if (rootCause instanceof BabbuddyException babException) {
+            return ResponseEntity
+                    .status(babException.getHttpStatusCode())
+                    .body(ErrorResponse.of(babException));
+        }
+
+        return ResponseEntity
+                .status(400)
+                .body(ErrorResponse.of(ErrorCode.PARAMETER_GRAMMAR_ERROR, rootCause != null ? rootCause.getMessage() : "잘못된 요청입니다."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
