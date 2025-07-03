@@ -2,7 +2,6 @@ package babbuddy.domain.oauth2.application.service.impl;
 
 
 import babbuddy.domain.oauth2.application.service.*;
-import babbuddy.domain.oauth2.presentation.dto.response.LoginToken;
 import babbuddy.domain.oauth2.presentation.dto.response.oatuh.OAuth2TokenResponse;
 import babbuddy.domain.oauth2.presentation.dto.response.oatuh.OAuth2UserResponse;
 import babbuddy.domain.user.domain.entity.Role;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
