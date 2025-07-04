@@ -10,4 +10,5 @@ public interface DisLikeFoodService {
     List<GetDisLikeRes> getDisLikeFood(String userId);
     void postDisLikeFood(PostDislikeReq req, String userId);
     void deleteDisLikeFood(Long foodId, String userId);
+
 }

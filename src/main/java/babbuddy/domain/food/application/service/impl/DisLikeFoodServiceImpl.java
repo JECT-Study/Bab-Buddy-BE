@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +55,13 @@ public class DisLikeFoodServiceImpl implements DisLikeFoodService {
 
     @Override
     public void deleteDisLikeFood(Long foodId, String userId) {
-        Food food = foodRepository.findById(foodId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
 
+        Food food = foodRepository.findById(foodId).orElse(null);
         if (food == null) throw new BabbuddyException(ErrorCode.FOOD_NOT_EXIST);
+
         foodRepository.delete(food);
     }
+
 }
