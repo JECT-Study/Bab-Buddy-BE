@@ -53,7 +53,11 @@ public enum ErrorCode {
     GROUP_NOT_EXIST(-1, "존재하지 않는 그룹 방입니다.", 400),
 
     // food
-    FOOD_NOT_EXIST(-1, "존재하지 않는 음식입니다.", 400);
+    FOOD_NOT_EXIST(-1, "존재하지 않는 음식입니다.", 400),
+
+
+    // openAI
+    OPENAI_NOT_EXIST(-1, "내용을 생성할수가 없습니다.", 400);
 
 
     private final int code;

@@ -67,3 +67,11 @@ oauth2:
     - profile_nickname
     - profile_image
     - account_email
+
+
+openai:
+  api:
+    url: https://api.openai.com
+    key: ${OPENAI_API_KEY}
+  text:
+    model: gpt-4-turbo-preview
