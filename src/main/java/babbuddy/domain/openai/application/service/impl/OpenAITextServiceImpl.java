@@ -78,7 +78,7 @@ public class OpenAITextServiceImpl implements OpenAITextService {
 
 
     @Override
-    public String recommendRestaurant(String address, String foodName) {
+    public String recommendRestaurant(String address, String foodName, String city) {
         /* ===== 1) 프롬프트 ===== */
         String prompt = String.format(
                 """
@@ -113,8 +113,8 @@ public class OpenAITextServiceImpl implements OpenAITextService {
             Map<String, Object> userLocation = Map.of(
                     "type", "approximate",
                     "country", "KR",
-                    "city", "Incheon",
-                    "region", "Incheon"
+                    "city", city,
+                    "region", city
             );
 
             Map<String, Object> tool = Map.of(

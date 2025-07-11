@@ -10,7 +10,7 @@ public interface RecommendFoodService {
 
     RecommendFoodRes recommendFood(RecommendFoodReq req, String userId);
 
-    void doRestaurantAsync(String address, RecommendFoodRes res);
+    void doRestaurantAsync(String address, RecommendFoodRes res, String city);
 
     List<RestaurantRes> restaurantAll(Long foodId);
 }

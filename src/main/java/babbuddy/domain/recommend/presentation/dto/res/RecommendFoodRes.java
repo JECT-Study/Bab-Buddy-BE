@@ -14,10 +14,13 @@ public record RecommendFoodRes(
         String foodIntroduce,
 
         @Schema(description = "추천 음식 이미지", example = "https://i.namu.wiki/i/oFHlYDjoEh8f-cc3lNK9jAemRkbXxNGwUg7XiW5LGS6DF1P2x8GCeNQxbQhVIwtUS1u53YPw-uoyqpmLtrGNJA.webp")
-        String foodImageUrl
+        String foodImageUrl,
+
+        @Schema(description = "도시 영어 이름", example = "Seoul 클라이언트는 이거 필요없어영 백엔드에서 필요해서")
+        String city
 
 ) {
-    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce, String foodImageUrl) {
-        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl);
+    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce, String foodImageUrl, String city) {
+        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, city);
     }
 }

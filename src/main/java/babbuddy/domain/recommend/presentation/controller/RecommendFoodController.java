@@ -41,7 +41,7 @@ public class RecommendFoodController {
         RecommendFoodRes res = recommendFoodService.recommendFood(req, userId);
 
         // 음식점 추천은 백그라운드에서 수행
-        recommendFoodService.doRestaurantAsync(req.address(), res);
+        recommendFoodService.doRestaurantAsync(req.address(), res, res.city());
 
         return ResponseEntity.ok(res);
     }

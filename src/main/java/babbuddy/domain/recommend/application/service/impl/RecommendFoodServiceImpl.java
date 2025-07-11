@@ -68,7 +68,9 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         // 알러지 + 싫어하는 음식 + 설문조사 3개
         String prompt = createTextPrompt(req, allergy, dislike);
 
-        String foodName = openAITextService.recommendFood(prompt);
+        String[] resultParts = openAITextService.recommendFood(prompt).split(",", 2);
+        String foodName = resultParts[0].trim();  // 음식 이름
+        String city = resultParts.length > 1 ? resultParts[1].trim() : "Seoul"; // 주소 영어로 된 값 없으면 기본 서울
 
         String foodIntroduce = "오늘 너를 위해 추천한 메뉴는 바로 " + foodName + "이야! 🍽️ 나만 알고 있기 아까운 맛인데, 너도 한 번 받아볼래?";
 
@@ -83,18 +85,18 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         RecommendFood saved = recommendFoodRepository.save(recommendFood);
 
 
-        return RecommendFoodRes.of(saved.getId(), foodName, foodIntroduce, foodImageUrl);
+        return RecommendFoodRes.of(saved.getId(), foodName, foodIntroduce, foodImageUrl, city);
     }
 
     @Override
-    public void doRestaurantAsync(String address, RecommendFoodRes res) {
+    public void doRestaurantAsync(String address, RecommendFoodRes res, String city) {
         /**
          * @Async는 프록시 기반으로 동작
          * 따라서 @Async는 같은 클래스 안에서 직접 호출하면 비동기로 실행되지 않기 때문에,
          * 다른 클래스(프록시 빈)로 분리해서 호출하는 구조로 만듬.
          * 여기서 호출만 위임
          */
-        restaurantAsyncService.recommendRestaurantsAsync(address, res);
+        restaurantAsyncService.recommendRestaurantsAsync(address, res, city);
     }
 
     @Override
@@ -158,7 +160,10 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
             prompt.append("- 기피 음식: ").append(dislike).append("\n");
         }
 
-        prompt.append("\n위 조건을 모두 고려하여 가장 적절한 음식을 추천해 주세요.");
+        prompt.append("\n📍 사용자의 주소는 다음과 같습니다: ").append(req.address()).append("\n");
+        prompt.append("주소를 참고하여 해당 지역을 영어로 표현해 주세요. 예를 들어 서울특별시는 Seoul, 인천광역시는 Incheon, 경기도는 Gyeonggi 등으로 변환합니다.\n");
+
+        prompt.append("\n✨ 최종 출력은 음식 이름과 지역(영문)을 쉼표(,)로 구분한 한 줄로 출력해 주세요.\n");
 
         return prompt.toString();
     }

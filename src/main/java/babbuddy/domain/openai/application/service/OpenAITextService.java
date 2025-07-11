@@ -4,5 +4,5 @@ public interface OpenAITextService {
 
     String recommendFood(String prompt);
 
-    String recommendRestaurant(String address, String foodName);
+    String recommendRestaurant(String address, String foodName, String city);
 }

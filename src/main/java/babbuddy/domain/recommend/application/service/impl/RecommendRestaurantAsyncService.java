@@ -31,18 +31,19 @@ public class RecommendRestaurantAsyncService {
     private final RecommendFoodRepository recommendFoodRepository;
 
     @Async
-    public void recommendRestaurantsAsync(String address, RecommendFoodRes res) {
+    public void recommendRestaurantsAsync(String address, RecommendFoodRes res, String city) {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
 
             /* 1) GPT 응답 JSON 문자열 */
-            String jsonRestaurant = openAITextService.recommendRestaurant(address, res.foodName());
+            String jsonRestaurant = openAITextService.recommendRestaurant(address, res.foodName(), city);
 
             /* 2) JSON → List<RestaurantDto>  (record 버전) */
             List<RestaurantRes> restaurants = mapper.readValue(
                     jsonRestaurant,
-                    new TypeReference<List<RestaurantRes>>() {}
+                    new TypeReference<List<RestaurantRes>>() {
+                    }
             );
 
             /* 3) 추천 음식 FK 조회 */
