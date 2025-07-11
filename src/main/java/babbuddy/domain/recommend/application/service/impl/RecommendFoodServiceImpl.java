@@ -7,15 +7,22 @@ import babbuddy.domain.dislikefood.domain.repository.DisLikeFoodRepository;
 import babbuddy.domain.openai.application.service.OpenAITextService;
 import babbuddy.domain.recommend.application.service.RecommendFoodService;
 import babbuddy.domain.recommend.domain.entity.RecommendFood;
+import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 import babbuddy.domain.recommend.domain.repository.RecommendFoodRepository;
+import babbuddy.domain.recommend.domain.repository.RecommendRestaurantRepository;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
 import babbuddy.domain.recommend.presentation.dto.res.RecommendFoodRes;
+import babbuddy.domain.recommend.presentation.dto.res.RestaurantRes;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -28,13 +35,14 @@ import org.jsoup.nodes.Element;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class RecommendFoodServiceImpl implements RecommendFoodService {
     private final OpenAITextService openAITextService;
     private final AllergyRepository allergyRepository;
     private final UserRepository userRepository;
     private final DisLikeFoodRepository disLikeFoodRepository;
     private final RecommendFoodRepository recommendFoodRepository;
-
+    private final RecommendRestaurantAsyncService restaurantAsyncService;
     @Override
     public RecommendFoodRes recommendFood(RecommendFoodReq req, String userId) {
         User user = userRepository.findById(userId).orElse(null);
@@ -48,7 +56,6 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
         // 싫어하는 음식 조회
         List<DislikeFood> dislikeFoods = disLikeFoodRepository.findAllByUser(user);
-        log.info(String.valueOf(dislikeFoods.size()));
         String dislike;
         if (!dislikeFoods.isEmpty()) dislike = dislikeFoodFor(dislikeFoods);
         else dislike = "없음";
@@ -73,6 +80,12 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
 
         return RecommendFoodRes.of(saved.getId(), foodName, foodIntroduce, foodImageUrl);
+    }
+
+    @Override
+    public void doRestaurantAsync(String address, RecommendFoodRes res) {
+        // 여기서 호출만 위임
+        restaurantAsyncService.recommendRestaurantsAsync(address, res);
     }
 
     private String getFoodImageUrl(String foodName) {

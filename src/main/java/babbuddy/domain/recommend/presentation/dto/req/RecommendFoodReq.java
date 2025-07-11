@@ -16,6 +16,10 @@ public record RecommendFoodReq(
 
         @Schema(description = "설문조사 3", example = "기름진 음식")
         @NotBlank(message = "문항 필수 입니다.")
-        String survey3
+        String survey3,
+
+        @Schema(description = "주소", example = "인천광역시 부평구 동수로 28")
+        @NotBlank(message = "문항 필수 입니다.")
+        String address
 
 ) {}

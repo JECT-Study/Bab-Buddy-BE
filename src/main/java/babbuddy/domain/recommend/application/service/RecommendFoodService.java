@@ -6,4 +6,6 @@ import babbuddy.domain.recommend.presentation.dto.res.RecommendFoodRes;
 public interface RecommendFoodService {
 
     RecommendFoodRes recommendFood(RecommendFoodReq req, String userId);
+
+    void doRestaurantAsync(String address, RecommendFoodRes res);
 }

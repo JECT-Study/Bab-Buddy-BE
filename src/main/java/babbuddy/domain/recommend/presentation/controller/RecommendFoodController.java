@@ -25,13 +25,20 @@ public class RecommendFoodController {
     @Operation(summary = "음식 추천", description = "사용자 정보 기반으로 음식을 추천합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식 추천 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음")
+            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
+            @ApiResponse(responseCode = "400", description = "openAI 생성 실패")
     })
     @PostMapping
     public ResponseEntity<RecommendFoodRes> postRecommendFood(
             @RequestBody RecommendFoodReq req,
             @AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(recommendFoodService.recommendFood(req, userId));
+
+        RecommendFoodRes res = recommendFoodService.recommendFood(req, userId);
+
+        // 음식점 추천은 백그라운드에서 수행
+        recommendFoodService.doRestaurantAsync(req.address(), res);
+
+        return ResponseEntity.ok(res);
     }
 
 }
