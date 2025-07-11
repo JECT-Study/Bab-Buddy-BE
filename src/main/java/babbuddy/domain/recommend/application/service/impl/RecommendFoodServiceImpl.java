@@ -54,7 +54,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         else dislike = "없음";
 
 
-        // 알러지 + 설문 조
+        // 알러지 + 싫어하는 음식 + 설문조사 3개
         String prompt = createTextPrompt(req, allergy, dislike);
 
         String foodName = openAITextService.recommendFood(prompt);
@@ -66,6 +66,8 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         RecommendFood recommendFood = RecommendFood.builder()
                 .foodName(foodName)
                 .foodIntroduce(foodIntroduce)
+                .user(user)
+                .isFavorite(false)
                 .build();
         RecommendFood saved = recommendFoodRepository.save(recommendFood);
 

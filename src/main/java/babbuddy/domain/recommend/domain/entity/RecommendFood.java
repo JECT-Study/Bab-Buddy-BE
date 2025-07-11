@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -26,10 +29,18 @@ public class RecommendFood {
     @Column(nullable = false)
     private String foodIntroduce;
 
+    @Column(nullable = false)
+    private boolean isFavorite;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @Builder
-    public RecommendFood(User user, String foodName, String foodIntroduce) {
+    public RecommendFood(User user, String foodName, String foodIntroduce, boolean isFavorite) {
         this.user = user;
         this.foodName = foodName;
-        this.foodIntroduce= foodIntroduce;
+        this.foodIntroduce = foodIntroduce;
+        this.isFavorite = isFavorite;
     }
 }
