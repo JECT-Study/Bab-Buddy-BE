@@ -1,7 +1,7 @@
-package babbuddy.domain.food.application.service;
+package babbuddy.domain.dislikefood.application.service;
 
-import babbuddy.domain.food.presentation.dto.dislike.req.PostDislikeReq;
-import babbuddy.domain.food.presentation.dto.dislike.res.GetDisLikeRes;
+import babbuddy.domain.dislikefood.presentation.dto.req.PostDislikeReq;
+import babbuddy.domain.dislikefood.presentation.dto.res.GetDisLikeRes;
 
 import java.util.List;
 

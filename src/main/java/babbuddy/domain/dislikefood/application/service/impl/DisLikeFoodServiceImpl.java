@@ -1,10 +1,10 @@
-package babbuddy.domain.food.application.service.impl;
+package babbuddy.domain.dislikefood.application.service.impl;
 
-import babbuddy.domain.food.application.service.DisLikeFoodService;
-import babbuddy.domain.food.domain.entity.DislikeFood;
-import babbuddy.domain.food.domain.repository.DisLikeFoodRepository;
-import babbuddy.domain.food.presentation.dto.dislike.req.PostDislikeReq;
-import babbuddy.domain.food.presentation.dto.dislike.res.GetDisLikeRes;
+import babbuddy.domain.dislikefood.application.service.DisLikeFoodService;
+import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
+import babbuddy.domain.dislikefood.domain.repository.DisLikeFoodRepository;
+import babbuddy.domain.dislikefood.presentation.dto.req.PostDislikeReq;
+import babbuddy.domain.dislikefood.presentation.dto.res.GetDisLikeRes;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;

@@ -1,13 +1,13 @@
 package babbuddy.domain.user.domain.entity;
 
 
-import babbuddy.domain.food.domain.entity.Food;
+import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
+
 import babbuddy.domain.allergy.domain.entity.Allergy;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -25,7 +25,7 @@ public class User {
     private String id;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Food> foods = new ArrayList<>();
+    private List<DislikeFood> foods = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Allergy> allergies = new ArrayList<>();

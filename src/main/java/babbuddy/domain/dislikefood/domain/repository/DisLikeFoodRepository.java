@@ -1,6 +1,6 @@
-package babbuddy.domain.food.domain.repository;
+package babbuddy.domain.dislikefood.domain.repository;
 
-import babbuddy.domain.food.domain.entity.DislikeFood;
+import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
 import babbuddy.domain.user.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

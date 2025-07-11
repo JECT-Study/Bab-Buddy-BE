@@ -1,4 +1,4 @@
-package babbuddy.domain.food.domain.entity;
+package babbuddy.domain.dislikefood.domain.entity;
 
 import babbuddy.domain.user.domain.entity.User;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package babbuddy.domain.food.presentation.dto.res.dislike;
+package babbuddy.domain.dislikefood.presentation.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "비선호 음식들 응답")
