@@ -1,8 +1,8 @@
 package babbuddy.domain.food.presentation.controller;
 
 import babbuddy.domain.food.application.service.DisLikeFoodService;
-import babbuddy.domain.food.presentation.dto.req.dislike.PostDislikeReq;
-import babbuddy.domain.food.presentation.dto.res.dislike.GetDisLikeRes;
+import babbuddy.domain.food.presentation.dto.dislike.req.PostDislikeReq;
+import babbuddy.domain.food.presentation.dto.dislike.res.GetDisLikeRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

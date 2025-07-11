@@ -9,7 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @NoArgsConstructor
 @DynamicUpdate
-public class Food {
+public class DislikeFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,7 @@ public class Food {
     private String foodName;
 
     @Builder
-    public Food(User user, String foodName) {
+    public DislikeFood(User user, String foodName) {
         this.user = user;
         this.foodName = foodName;
     }
