@@ -28,6 +28,8 @@ public class RecommendRestaurant {
     // 주소
     private String address;
 
+    // 음식점 평점
+    private String rate;
     // 위도
     private Double latitude;
 
@@ -39,12 +41,14 @@ public class RecommendRestaurant {
                                String restaurantName,
                                String restaurantType,
                                String address,
+                               String rate,
                                Double latitude,
                                Double longitude) {
         this.recommendFood = recommendFood;
         this.restaurantName = restaurantName;
         this.restaurantType = restaurantType;
         this.address = address;
+        this.rate=rate;
         this.latitude = latitude;
         this.longitude = longitude;
     }

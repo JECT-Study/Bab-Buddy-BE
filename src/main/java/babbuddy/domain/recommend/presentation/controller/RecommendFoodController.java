@@ -3,6 +3,7 @@ package babbuddy.domain.recommend.presentation.controller;
 import babbuddy.domain.recommend.application.service.RecommendFoodService;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
 import babbuddy.domain.recommend.presentation.dto.res.RecommendFoodRes;
+import babbuddy.domain.recommend.presentation.dto.res.RestaurantRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/recommend")
@@ -26,7 +29,9 @@ public class RecommendFoodController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식 추천 성공"),
             @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
-            @ApiResponse(responseCode = "400", description = "openAI 생성 실패")
+            @ApiResponse(responseCode = "420", description = "openAI 생성 실패, JSON 매핑 실패"),
+            @ApiResponse(responseCode = "421", description = "JSON 매핑 실패"),
+            @ApiResponse(responseCode = "422", description = "이미지 매핑 실패")
     })
     @PostMapping
     public ResponseEntity<RecommendFoodRes> postRecommendFood(
@@ -39,6 +44,17 @@ public class RecommendFoodController {
         recommendFoodService.doRestaurantAsync(req.address(), res);
 
         return ResponseEntity.ok(res);
+    }
+    @Operation(summary = "음식점 조회", description = "추천 음식 ID 기반으로 음식점 3개를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "유저 및 음식점 존재하지 않음"),
+    })
+    @GetMapping("/{foodId}")
+    public ResponseEntity<List<RestaurantRes>> getRestaurant(
+            @PathVariable Long foodId) {
+
+        return ResponseEntity.ok(recommendFoodService.restaurantAll(foodId));
     }
 
 }

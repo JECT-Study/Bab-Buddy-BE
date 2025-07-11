@@ -56,6 +56,7 @@ public class RecommendRestaurantAsyncService {
                         .restaurantName(dto.name())
                         .restaurantType(dto.restaurantType())
                         .address(dto.address())
+                        .rate(dto.rating())
                         .latitude(dto.latitude())
                         .longitude(dto.longitude())
                         .build();
@@ -66,7 +67,7 @@ public class RecommendRestaurantAsyncService {
 
         } catch (Exception e) {
             log.error("❌ 음식점 추천 저장 실패", e);
-            throw new BabbuddyException(ErrorCode.OPENAI_NOT_EXIST);
+            throw new BabbuddyException(ErrorCode.JSON_MAPPING_FAIL);
         }
     }
 }

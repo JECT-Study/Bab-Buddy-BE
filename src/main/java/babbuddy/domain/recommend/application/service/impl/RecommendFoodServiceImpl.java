@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -43,6 +44,9 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
     private final DisLikeFoodRepository disLikeFoodRepository;
     private final RecommendFoodRepository recommendFoodRepository;
     private final RecommendRestaurantAsyncService restaurantAsyncService;
+    private final RecommendRestaurantRepository recommendRestaurantRepository;
+
+
     @Override
     public RecommendFoodRes recommendFood(RecommendFoodReq req, String userId) {
         User user = userRepository.findById(userId).orElse(null);
@@ -84,8 +88,32 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
     @Override
     public void doRestaurantAsync(String address, RecommendFoodRes res) {
-        // 여기서 호출만 위임
+        /**
+         * @Async는 프록시 기반으로 동작
+         * 따라서 @Async는 같은 클래스 안에서 직접 호출하면 비동기로 실행되지 않기 때문에,
+         * 다른 클래스(프록시 빈)로 분리해서 호출하는 구조로 만듬.
+         * 여기서 호출만 위임
+         */
         restaurantAsyncService.recommendRestaurantsAsync(address, res);
+    }
+
+    @Override
+    public List<RestaurantRes> restaurantAll(Long foodId) {
+        RecommendFood recommendFood = recommendFoodRepository.findById(foodId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
+
+        List<RecommendRestaurant> allRecommendFood = recommendRestaurantRepository.findByRecommendFood(recommendFood);
+
+        if (allRecommendFood.isEmpty()) throw new BabbuddyException(ErrorCode.FOOD_NOT_EXIST);
+
+        List<RestaurantRes> result = new ArrayList<>();
+
+        for (RecommendRestaurant recommendRestaurant : allRecommendFood) {
+            result.add(RestaurantRes.of(recommendRestaurant));
+        }
+
+        return result;
+
     }
 
     private String getFoodImageUrl(String foodName) {
@@ -105,7 +133,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "https://via.placeholder.com/300?text=Image+Not+Found";
+            throw new BabbuddyException(ErrorCode.IMAGE_MAPPING_FAIL);
         }
     }
 
