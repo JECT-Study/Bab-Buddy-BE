@@ -2,7 +2,6 @@ package babbuddy.domain.food.application.service.impl;
 
 import babbuddy.domain.food.application.service.DisLikeFoodService;
 import babbuddy.domain.food.domain.entity.DislikeFood;
-import babbuddy.domain.food.domain.entity.Food;
 import babbuddy.domain.food.domain.repository.DisLikeFoodRepository;
 import babbuddy.domain.food.presentation.dto.dislike.req.PostDislikeReq;
 import babbuddy.domain.food.presentation.dto.dislike.res.GetDisLikeRes;
