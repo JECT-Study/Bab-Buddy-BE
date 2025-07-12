@@ -41,7 +41,7 @@ public class RecommendFoodController {
 
         RecommendFoodRes res = recommendFoodService.recommendFood(req, userId);
 
-        // 음식점 추천은 백그라운드에서 수행
+        // 음식점 추천은 백그라운드에서 수행 (논블로킹)
         recommendFoodService.doRestaurantAsync(req.address(), res, res.city());
 
         return ResponseEntity.ok(res);
@@ -50,6 +50,7 @@ public class RecommendFoodController {
     @Operation(summary = "음식점 조회", description = "추천 음식 ID 기반으로 음식점 3개를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
+            @ApiResponse(responseCode = "204", description = "데이터 준비 중"),
             @ApiResponse(responseCode = "400", description = "유저 및 음식점 존재하지 않음"),
     })
     @GetMapping("/{foodId}")
@@ -60,4 +61,18 @@ public class RecommendFoodController {
         return ResponseEntity.ok(restaurantRes);
     }
 
+
+    /*
+    * *
+    *   @PostMapping("/test")
+    public void test(
+            @RequestBody RecommendFoodReq req,
+            @AuthenticationPrincipal String userId) {
+
+        // 음식점 추천은 백그라운드에서 수행 (논블로킹)
+
+        recommendFoodService.doRestaurantAsync("경기도 안양시 동안구 시민대로", RecommendFoodRes.of(35L, "삼겹살", "비빔밥", "비빔밥", "비빔밥"), "인천");
+
+    }
+    * */
 }

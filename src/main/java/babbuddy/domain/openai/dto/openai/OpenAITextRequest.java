@@ -1,4 +1,4 @@
-package babbuddy.domain.openai.dto;
+package babbuddy.domain.openai.dto.openai;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

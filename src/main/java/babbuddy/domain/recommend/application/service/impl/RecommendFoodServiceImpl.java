@@ -17,12 +17,9 @@ import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -96,7 +93,8 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
          * 다른 클래스(프록시 빈)로 분리해서 호출하는 구조로 만듬.
          * 여기서 호출만 위임
          */
-        restaurantAsyncService.recommendRestaurantsAsync(address, res, city);
+        // restaurantAsyncService.recommendRestaurantsAsyncV1(address, res, city); // openai용
+         restaurantAsyncService.recommendRestaurantsAsyncV2(address, res, city); // 네이버 지역 검색 api
     }
 
     @Override

@@ -4,18 +4,18 @@ import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 
 public record RestaurantRes(
         String name,
-        String rating,
         String restaurantType,
         String address,
-        Double latitude,
-        Double longitude
+        String rating,
+        double latitude,
+        double longitude
 ) {
     public static RestaurantRes of(RecommendRestaurant recommendRestaurant) {
         return new RestaurantRes(
                 recommendRestaurant.getRestaurantName(),
-                recommendRestaurant.getRate(),
                 recommendRestaurant.getRestaurantType(),
                 recommendRestaurant.getAddress(),
+                recommendRestaurant.getRate(),
                 recommendRestaurant.getLatitude(),
                 recommendRestaurant.getLongitude()
         );

@@ -1,12 +1,11 @@
 package babbuddy.domain.openai.application.service.impl;
 
 import babbuddy.domain.openai.application.service.OpenAITextService;
-import babbuddy.domain.openai.dto.OpenAITextRequest;
-import babbuddy.domain.openai.dto.OpenAITextResponse;
+import babbuddy.domain.openai.dto.openai.OpenAITextRequest;
+import babbuddy.domain.openai.dto.openai.OpenAITextResponse;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
 import babbuddy.global.infra.feignclient.OpenAITextFeignClient;
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

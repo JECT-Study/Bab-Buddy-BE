@@ -1,7 +1,7 @@
 package babbuddy.global.infra.feignclient;
 
-import babbuddy.domain.openai.dto.OpenAITextRequest;
-import babbuddy.domain.openai.dto.OpenAITextResponse;
+import babbuddy.domain.openai.dto.openai.OpenAITextRequest;
+import babbuddy.domain.openai.dto.openai.OpenAITextResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
