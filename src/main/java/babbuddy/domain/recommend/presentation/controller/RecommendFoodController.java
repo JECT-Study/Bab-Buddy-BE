@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,16 +46,18 @@ public class RecommendFoodController {
 
         return ResponseEntity.ok(res);
     }
+
     @Operation(summary = "음식점 조회", description = "추천 음식 ID 기반으로 음식점 3개를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
             @ApiResponse(responseCode = "400", description = "유저 및 음식점 존재하지 않음"),
     })
     @GetMapping("/{foodId}")
-    public ResponseEntity<List<RestaurantRes>> getRestaurant(
+    public ResponseEntity<?> getRestaurant(
             @PathVariable Long foodId) {
-
-        return ResponseEntity.ok(recommendFoodService.restaurantAll(foodId));
+        List<RestaurantRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
+        if (restaurantRes == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("데이터 준비 중");
+        return ResponseEntity.ok(restaurantRes);
     }
 
 }
