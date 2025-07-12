@@ -50,14 +50,14 @@ public class RecommendFoodController {
     @Operation(summary = "음식점 조회", description = "추천 음식 ID 기반으로 음식점 3개를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
-            @ApiResponse(responseCode = "204", description = "데이터 준비 중"),
+            @ApiResponse(responseCode = "204", description = "데이터 없음"),
             @ApiResponse(responseCode = "400", description = "유저 및 음식점 존재하지 않음"),
     })
     @GetMapping("/{foodId}")
     public ResponseEntity<?> getRestaurant(
             @PathVariable Long foodId) {
         List<RestaurantRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
-        if (restaurantRes == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("데이터 준비 중");
+        if (restaurantRes == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주변 음식점이 없습니다.");
         return ResponseEntity.ok(restaurantRes);
     }
 
