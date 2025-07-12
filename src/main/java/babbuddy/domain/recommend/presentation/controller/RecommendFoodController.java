@@ -42,7 +42,7 @@ public class RecommendFoodController {
         RecommendFoodRes res = recommendFoodService.recommendFood(req, userId);
 
         // 음식점 추천은 백그라운드에서 수행 (논블로킹)
-        recommendFoodService.doRestaurantAsync(req.address(), res, res.city());
+        recommendFoodService.doRestaurantAsync(req.address(), res, res.category());
 
         return ResponseEntity.ok(res);
     }

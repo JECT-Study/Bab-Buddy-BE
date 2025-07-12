@@ -73,7 +73,7 @@ public class RecommendRestaurantAsyncService {
     }
 
     @Async
-    public void recommendRestaurantsAsyncV2(String address, RecommendFoodRes res, String city) {
+    public void recommendRestaurantsAsyncV2(String address, RecommendFoodRes res, String category) {
         try {
             // 1. 검색어 구성
             String query = address + " " + res.foodName();
@@ -127,12 +127,10 @@ public class RecommendRestaurantAsyncService {
             for (RestaurantRes dto : restaurants) {
                 log.info("💾 저장 대상: name='{}', type='{}', address='{}'",
                         dto.name(), dto.restaurantType(), dto.address());
-                String category = dto.restaurantType();
-                String type = category.split(">")[0];  // "중식"만 추출
                 RecommendRestaurant entity = RecommendRestaurant.builder()
                         .recommendFood(recommendFood)
                         .restaurantName(dto.name())
-                        .restaurantType(type)
+                        .restaurantType(category)
                         .address(dto.address())
                         .rate(dto.rating())
                         .latitude(dto.latitude())

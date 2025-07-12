@@ -16,11 +16,14 @@ public record RecommendFoodRes(
         @Schema(description = "추천 음식 이미지", example = "https://i.namu.wiki/i/oFHlYDjoEh8f-cc3lNK9jAemRkbXxNGwUg7XiW5LGS6DF1P2x8GCeNQxbQhVIwtUS1u53YPw-uoyqpmLtrGNJA.webp")
         String foodImageUrl,
 
-        @Schema(description = "도시 영어 이름", example = "Seoul 클라이언트는 이거 필요없어영 백엔드에서 필요해서")
-        String city
+//        @Schema(description = "도시 영어 이름", example = "Seoul 클라이언트는 이거 필요없어영 백엔드에서 필요해서")
+//        String city
+
+        @Schema(description = "음식 타입", example = "한식, 양식 등")
+        String category
 
 ) {
-    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce, String foodImageUrl, String city) {
-        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, city);
+    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce, String foodImageUrl, String category) {
+        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, category);
     }
 }
