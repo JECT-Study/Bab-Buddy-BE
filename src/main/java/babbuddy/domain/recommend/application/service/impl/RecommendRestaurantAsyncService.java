@@ -96,7 +96,7 @@ public class RecommendRestaurantAsyncService {
                         .rate(dto.rating())
                         .latitude(dto.latitude())
                         .longitude(dto.longitude())
-                        .isFavorite(false)
+                        .favorite(false)
                         .createdAt(res.createdAt())
                         .build();
 

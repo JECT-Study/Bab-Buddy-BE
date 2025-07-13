@@ -67,15 +67,17 @@ public class RestaurantServiceImpl implements RestaurantService {
         // 카테고리-별 조회
         Page<RecommendRestaurant> entities;
         if (category == Category.ALL) {
-            entities = restaurantRepository.findAllByRecommendFoodIn(foods, pageable);
+            entities = restaurantRepository
+                    .findAllByRecommendFoodInAndFavoriteTrue(foods, pageable);
         } else if (category == Category.ETC) {
-            // '기타'일 경우 → 한식, 중식, 일식, 양식 제외
-            List<String> excludedTypes = Arrays.asList("한식", "중식", "일식", "양식");
-            entities = restaurantRepository.findAllByRecommendFoodInAndRestaurantTypeNotIn(foods, excludedTypes, pageable);
-        }
-        else {
-            entities = restaurantRepository.findAllByRecommendFoodInAndRestaurantType(
-                    foods, category.getDbValue(), pageable);
+            List<String> excludedTypes = List.of("한식", "중식", "일식", "양식");
+            entities = restaurantRepository
+                    .findAllByRecommendFoodInAndRestaurantTypeNotInAndFavoriteTrue(
+                            foods, excludedTypes, pageable);
+        } else {
+            entities = restaurantRepository
+                    .findAllByRecommendFoodInAndRestaurantTypeAndFavoriteTrue(
+                            foods, category.getDbValue(), pageable);
         }
 
         return entities.map(RestaurantSelectRes::of);

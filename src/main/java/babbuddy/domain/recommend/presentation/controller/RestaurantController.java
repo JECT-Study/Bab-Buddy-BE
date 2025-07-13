@@ -29,8 +29,6 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-    private final UserRepository userRepository;
-    private final RecommendFoodRepository recommendFoodRepository;
 
     @Operation(summary = "음식점 즐겨찾기", description = "음식점을 즐겨찾기 합니다.")
     @ApiResponses(value = {
@@ -44,7 +42,7 @@ public class RestaurantController {
 
         restaurantService.updateBookmark(userId, req);
     }
-
+//
 //    @Operation(summary = "음식점 조회(마이페이지용 - 추천 결과 히스토리)", description = "사용자가 기록한 모든 음식점들을 조회합니다.")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "음식점 조회 성공"),

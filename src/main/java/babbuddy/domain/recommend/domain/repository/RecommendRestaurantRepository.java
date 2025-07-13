@@ -15,16 +15,15 @@ import java.util.List;
 public interface RecommendRestaurantRepository extends JpaRepository<RecommendRestaurant, Long> {
     List<RecommendRestaurant> findByRecommendFood(RecommendFood recommendFood);
 
-    // 카테고리 X
-    Page<RecommendRestaurant> findAllByRecommendFoodIn(
-            List<RecommendFood> recommendFoods, Pageable pageable);
+    Page<RecommendRestaurant> findAllByRecommendFoodInAndFavoriteTrue(
+            List<RecommendFood> foods, Pageable pageable);
 
-
-    // 카테고리 O
-    Page<RecommendRestaurant> findAllByRecommendFoodInAndRestaurantType(
-            List<RecommendFood> recommendFoods, String restaurantType, Pageable pageable);
-
-    Page<RecommendRestaurant> findAllByRecommendFoodInAndRestaurantTypeNotIn(
+    Page<RecommendRestaurant> findAllByRecommendFoodInAndRestaurantTypeNotInAndFavoriteTrue(
             List<RecommendFood> foods, List<String> excludedTypes, Pageable pageable);
 
+    Page<RecommendRestaurant> findAllByRecommendFoodInAndRestaurantTypeAndFavoriteTrue(
+            List<RecommendFood> foods, String restaurantType, Pageable pageable);
 }
+
+
+

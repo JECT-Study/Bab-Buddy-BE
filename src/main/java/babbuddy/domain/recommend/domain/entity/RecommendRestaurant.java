@@ -38,8 +38,9 @@ public class RecommendRestaurant {
     // 경도
     private Double longitude;
 
-    @Column(nullable = false)
-    private boolean isFavorite;
+    // 즐겨찾기
+    @Column(name = "is_favorite", nullable = false)
+    private boolean favorite;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -52,7 +53,7 @@ public class RecommendRestaurant {
                                String rate,
                                Double latitude,
                                Double longitude,
-                               boolean isFavorite,
+                               boolean favorite,
                                LocalDateTime createdAt) {
         this.recommendFood = recommendFood;
         this.restaurantName = restaurantName;
@@ -61,12 +62,12 @@ public class RecommendRestaurant {
         this.rate = rate;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.isFavorite = isFavorite;
+        this.favorite = favorite;
         this.createdAt=createdAt;
     }
 
 
     public void updateIsFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
+        this.favorite = favorite;
     }
 }
