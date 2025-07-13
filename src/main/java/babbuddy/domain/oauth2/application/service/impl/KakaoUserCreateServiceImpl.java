@@ -38,7 +38,7 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
 
         User user = userRepository.findById(oAuth2UserResponse.id()).orElse(null);
 
-        if(user == null) {
+        if (user == null) {
             log.info("신규 고객님, {} 님이 입장하셨습니다.", oAuth2UserResponse.getName());
             log.info("신규 고객님, {} 님이 입장하셨습니다.", oAuth2UserResponse.getEmail());
             log.info("신규 고객님, {} 님이 입장하셨습니다.", oAuth2UserResponse.getProfile());
@@ -51,11 +51,9 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
                     .build();
             userRepository.save(user);
 
+        } else {
+            user.updateEmailAndProfile(oAuth2UserResponse.getEmail(), oAuth2UserResponse.getProfile());
         }
-        else {
-            user.updateNameAndEmailAndProfile(oAuth2UserResponse.getName(), oAuth2UserResponse.getEmail(), oAuth2UserResponse.getProfile());
-        }
-
 
 
         LocalDateTime now = LocalDateTime.now().plusSeconds(oAuth2TokenResponse.expiresIn());

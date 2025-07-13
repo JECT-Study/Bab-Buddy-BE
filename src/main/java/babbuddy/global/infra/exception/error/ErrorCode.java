@@ -50,13 +50,14 @@ public enum ErrorCode {
     ALLERGY_NOT_EXIST(-1, "존재하지 않는 필드입니다.", 400),
 
     // group
-    GROUP_NOT_EXIST(-1, "존재하지 않는 그룹 방입니다.", 400),
+    GROUP_NOT_EXIST(-1, "존재하지 않는 그룹 방입니다.", 500),
 
     // food
     FOOD_NOT_EXIST(-1, "존재하지 않는 음식입니다.", 400),
     RESTAURANT_NOT_EXIST(-1, "존재하지 않는 음식점입니다.", 400),
     JSON_MAPPING_FAIL(-1, "JSON 매핑 실패입니다.", 421),
     IMAGE_MAPPING_FAIL(-1, "이미지를 갖고 오지 못했습니다.", 422),
+    FOOD_NAME_DISTINCT(-1, "음식 이름이 중복됩니다.", 423),
 
 
     // openAI
