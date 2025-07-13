@@ -38,7 +38,8 @@ public class DisLikeFoodController {
     @Operation(summary = "비선호 음식 등록", description = "사용자의 비선호 음식을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비선호 음식 등록 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음")
+            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
+            @ApiResponse(responseCode = "423", description = "음식 이름이 중복됩니다.")
     })
     @PostMapping
     public void postDisLikeFood(@RequestBody @Valid PostDislikeReq req,

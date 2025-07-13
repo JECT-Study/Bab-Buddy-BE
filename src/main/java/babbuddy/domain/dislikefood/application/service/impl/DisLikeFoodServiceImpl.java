@@ -45,8 +45,13 @@ public class DisLikeFoodServiceImpl implements DisLikeFoodService {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
 
-        DislikeFood food = DislikeFood.builder().foodName(req.foodName()).user(user).build();
-        disLikeFoodRepository.save(food);
+        DislikeFood dislikeFood = disLikeFoodRepository.findByUserAndFoodName(user, req.foodName()).orElse(null);
+        if (dislikeFood == null) {
+            DislikeFood food = DislikeFood.builder().foodName(req.foodName()).user(user).build();
+            disLikeFoodRepository.save(food);
+        } else {
+            throw new BabbuddyException(ErrorCode.FOOD_NAME_DISTINCT);
+        }
     }
 
     @Override
