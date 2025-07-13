@@ -5,6 +5,7 @@ import babbuddy.domain.allergy.domain.repository.AllergyRepository;
 import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
 import babbuddy.domain.dislikefood.domain.repository.DisLikeFoodRepository;
 import babbuddy.domain.openai.application.service.OpenAITextService;
+import babbuddy.domain.openai.dto.naver.NaverImageSearchRes;
 import babbuddy.domain.recommend.application.service.RecommendFoodService;
 import babbuddy.domain.recommend.domain.entity.RecommendFood;
 import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
@@ -17,6 +18,8 @@ import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
+import babbuddy.global.infra.feignclient.NaverImageClient;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
     private final RecommendFoodRepository recommendFoodRepository;
     private final RecommendRestaurantAsyncService restaurantAsyncService;
     private final RecommendRestaurantRepository recommendRestaurantRepository;
+    private final NaverImageClient naverImageClient;
 
 
     @Override
@@ -72,7 +76,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
         String foodIntroduce = "오늘 너를 위해 추천한 메뉴는 바로 " + foodName + "이야! 🍽️ 나만 알고 있기 아까운 맛인데, 너도 한 번 받아볼래?";
 
-        String foodImageUrl = getFoodImageUrl(foodName);
+        String foodImageUrl = getFoodImageUrlV2(foodName);
 
         RecommendFood recommendFood = RecommendFood.builder()
                 .foodName(foodName)
@@ -117,25 +121,29 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
     }
 
-    private String getFoodImageUrl(String foodName) {
+    private String getFoodImageUrlV2(String foodName) {
 
         try {
-            String encoded = URLEncoder.encode(foodName, "UTF-8");
-            String url = "https://www.google.com/search?tbm=isch&q=" + encoded;
+            NaverImageSearchRes response = naverImageClient.searchImages(
+                    foodName + " 음식 사진",  // 검색어
+                    1,                      // display
+                    1,                      // start
+                    "sim",                  // sort: 정확도
+                    "medium"                // filter
+            );
 
-            Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0")
-                    .timeout(10000)
-                    .get();
+            if (response.items() != null && !response.items().isEmpty()) {
+                return response.items().get(0).link();  // 첫 번째 이미지의 원본 URL
+            } else {
+                log.warn("🔍 이미지 검색 결과 없음: {}", foodName);
+                return null;
+            }
 
-            // 첫 번째 이미지 가져오기 (0번은 로고일 수 있으므로 1번)
-            Element img = doc.select("img").get(1);
-            return img.attr("src");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BabbuddyException(ErrorCode.IMAGE_MAPPING_FAIL);
+        } catch (FeignException e) {
+            log.error("❌ 네이버 이미지 API 호출 실패: {}", e.getMessage(), e);
+            return null;
         }
+
     }
 
 
@@ -210,6 +218,26 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         }
         StringBuilder info = sb.deleteCharAt(sb.length() - 1);
         return info.toString();
+    }
+    private String getFoodImageUrlV1(String foodName) {
+
+        try {
+            String encoded = URLEncoder.encode(foodName, "UTF-8");
+            String url = "https://www.google.com/search?tbm=isch&q=" + encoded;
+
+            Document doc = Jsoup.connect(url)
+                    .userAgent("Mozilla/5.0")
+                    .timeout(10000)
+                    .get();
+
+            // 첫 번째 이미지 가져오기 (0번은 로고일 수 있으므로 1번)
+            Element img = doc.select("img").get(1);
+            return img.attr("src");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BabbuddyException(ErrorCode.IMAGE_MAPPING_FAIL);
+        }
     }
 
 
