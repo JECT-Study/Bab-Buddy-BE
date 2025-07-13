@@ -35,18 +35,15 @@ public class RecommendFood {
     @Column(nullable = false)
     private String foodIntroduce;
 
-    @Column(nullable = false)
-    private boolean isFavorite;
 
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public RecommendFood(User user, String foodName, String foodIntroduce, boolean isFavorite) {
+    public RecommendFood(User user, String foodName, String foodIntroduce) {
         this.user = user;
         this.foodName = foodName;
         this.foodIntroduce = foodIntroduce;
-        this.isFavorite = isFavorite;
     }
 }

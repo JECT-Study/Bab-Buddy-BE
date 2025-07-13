@@ -36,6 +36,9 @@ public class RecommendRestaurant {
     // 경도
     private Double longitude;
 
+    @Column(nullable = false)
+    private boolean isFavorite;
+
     @Builder
     public RecommendRestaurant(RecommendFood recommendFood,
                                String restaurantName,
@@ -43,13 +46,20 @@ public class RecommendRestaurant {
                                String address,
                                String rate,
                                Double latitude,
-                               Double longitude) {
+                               Double longitude,
+                               boolean isFavorite) {
         this.recommendFood = recommendFood;
         this.restaurantName = restaurantName;
         this.restaurantType = restaurantType;
         this.address = address;
-        this.rate=rate;
+        this.rate = rate;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.isFavorite = isFavorite;
+    }
+
+
+    public void updateIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }

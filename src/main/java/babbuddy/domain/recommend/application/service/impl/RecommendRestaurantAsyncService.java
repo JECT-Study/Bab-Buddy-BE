@@ -135,6 +135,7 @@ public class RecommendRestaurantAsyncService {
                         .rate(dto.rating())
                         .latitude(dto.latitude())
                         .longitude(dto.longitude())
+                        .isFavorite(false)
                         .build();
 
                 recommendRestaurantRepository.save(entity);
