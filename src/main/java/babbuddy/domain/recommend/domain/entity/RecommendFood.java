@@ -36,14 +36,18 @@ public class RecommendFood {
     private String foodIntroduce;
 
 
+    @Column(nullable = false)
+    private String foodType; // 음식점이랑 동일
+
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public RecommendFood(User user, String foodName, String foodIntroduce) {
+    public RecommendFood(User user, String foodName, String foodIntroduce, String foodType) {
         this.user = user;
         this.foodName = foodName;
         this.foodIntroduce = foodIntroduce;
+        this.foodType =foodType;
     }
 }

@@ -6,13 +6,14 @@ import babbuddy.domain.recommend.domain.entity.RecommendFood;
 import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 import babbuddy.domain.recommend.domain.repository.RecommendFoodRepository;
 import babbuddy.domain.recommend.domain.repository.RecommendRestaurantRepository;
-import babbuddy.domain.recommend.presentation.dto.res.RecommendFoodRes;
-import babbuddy.domain.recommend.presentation.dto.res.RestaurantRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
 import babbuddy.global.infra.feignclient.NaverLocalClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -24,53 +25,12 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class RecommendRestaurantAsyncService {
     private final RecommendRestaurantRepository recommendRestaurantRepository;
     private final OpenAITextService openAITextService;
     private final NaverLocalClient naverLocalClient;
     private final RecommendFoodRepository recommendFoodRepository;
-
-    @Async
-    public void recommendRestaurantsAsyncV1(String address, RecommendFoodRes res, String city) {
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-
-            /* 1) GPT 응답 JSON 문자열 */
-            String jsonRestaurant = openAITextService.recommendRestaurant(address, res.foodName(), city);
-
-            /* 2) JSON → List<RestaurantDto>  (record 버전) */
-            List<RestaurantRes> restaurants = mapper.readValue(
-                    jsonRestaurant,
-                    new TypeReference<List<RestaurantRes>>() {
-                    }
-            );
-
-            /* 3) 추천 음식 FK 조회 */
-            RecommendFood recommendFood = recommendFoodRepository.findById(res.id())
-                    .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
-
-            /* 4) 엔티티 변환·저장 */
-            for (RestaurantRes dto : restaurants) {
-                RecommendRestaurant entity = RecommendRestaurant.builder()
-                        .recommendFood(recommendFood)
-                        .restaurantName(dto.name())
-                        .restaurantType(dto.restaurantType())
-                        .address(dto.address())
-                        .rate(dto.rating())
-                        .latitude(dto.latitude())
-                        .longitude(dto.longitude())
-                        .build();
-
-                recommendRestaurantRepository.save(entity);
-            }
-
-
-        } catch (Exception e) {
-            log.error("❌ 음식점 추천 저장 실패", e);
-            throw new BabbuddyException(ErrorCode.JSON_MAPPING_FAIL);
-        }
-    }
 
     @Async
     public void recommendRestaurantsAsyncV2(String address, RecommendFoodRes res, String category) {
@@ -93,7 +53,7 @@ public class RecommendRestaurantAsyncService {
             }
 
             // 3. 응답 변환
-            List<RestaurantRes> restaurants = apiResp.items().stream()
+            List<RestaurantJsonRes> restaurants = apiResp.items().stream()
                     .map(item -> {
                         log.debug("📌 검색 결과 → title={}, category={}, address={}, mapx={}, mapy={}",
                                 item.title(), item.category(), item.roadAddress(), item.mapx(), item.mapy());
@@ -104,7 +64,8 @@ public class RecommendRestaurantAsyncService {
                             return null;
                         }
 
-                        return new RestaurantRes(
+                        return new RestaurantJsonRes(
+
                                 item.title().replaceAll("<.*?>", ""),
                            item.category(),
                                 item.roadAddress(),
@@ -124,7 +85,7 @@ public class RecommendRestaurantAsyncService {
                     .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
 
             // 5. 저장
-            for (RestaurantRes dto : restaurants) {
+            for (RestaurantJsonRes dto : restaurants) {
                 log.info("💾 저장 대상: name='{}', type='{}', address='{}'",
                         dto.name(), dto.restaurantType(), dto.address());
                 RecommendRestaurant entity = RecommendRestaurant.builder()
@@ -136,6 +97,7 @@ public class RecommendRestaurantAsyncService {
                         .latitude(dto.latitude())
                         .longitude(dto.longitude())
                         .isFavorite(false)
+                        .createdAt(res.createdAt())
                         .build();
 
                 recommendRestaurantRepository.save(entity);
@@ -159,6 +121,48 @@ public class RecommendRestaurantAsyncService {
         return Double.parseDouble(integerPart + "." + fractionalPart);
     }
 
+
+    @Async
+    public void recommendRestaurantsAsyncV1(String address, RecommendFoodRes res, String city) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            /* 1) GPT 응답 JSON 문자열 */
+            String jsonRestaurant = openAITextService.recommendRestaurant(address, res.foodName(), city);
+
+            /* 2) JSON → List<RestaurantDto>  (record 버전) */
+            List<RestaurantJsonRes> restaurants = mapper.readValue(
+                    jsonRestaurant,
+                    new TypeReference<List<RestaurantJsonRes>>() {
+                    }
+            );
+
+            /* 3) 추천 음식 FK 조회 */
+            RecommendFood recommendFood = recommendFoodRepository.findById(res.id())
+                    .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
+
+            /* 4) 엔티티 변환·저장 */
+            for (RestaurantJsonRes dto : restaurants) {
+                RecommendRestaurant entity = RecommendRestaurant.builder()
+                        .recommendFood(recommendFood)
+                        .restaurantName(dto.name())
+                        .restaurantType(dto.restaurantType())
+                        .address(dto.address())
+                        .rate(dto.rating())
+                        .latitude(dto.latitude())
+                        .longitude(dto.longitude())
+                        .build();
+
+                recommendRestaurantRepository.save(entity);
+            }
+
+
+        } catch (Exception e) {
+            log.error("❌ 음식점 추천 저장 실패", e);
+            throw new BabbuddyException(ErrorCode.JSON_MAPPING_FAIL);
+        }
+    }
 
 
 }

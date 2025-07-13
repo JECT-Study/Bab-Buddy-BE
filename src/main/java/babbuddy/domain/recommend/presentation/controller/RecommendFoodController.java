@@ -2,8 +2,9 @@ package babbuddy.domain.recommend.presentation.controller;
 
 import babbuddy.domain.recommend.application.service.RecommendFoodService;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
-import babbuddy.domain.recommend.presentation.dto.res.RecommendFoodRes;
-import babbuddy.domain.recommend.presentation.dto.res.RestaurantRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -56,7 +57,7 @@ public class RecommendFoodController {
     @GetMapping("/{foodId}")
     public ResponseEntity<?> getRestaurant(
             @PathVariable Long foodId) {
-        List<RestaurantRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
+        List<RestaurantSelectRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
         if (restaurantRes == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주변 음식점이 없습니다.");
         return ResponseEntity.ok(restaurantRes);
     }

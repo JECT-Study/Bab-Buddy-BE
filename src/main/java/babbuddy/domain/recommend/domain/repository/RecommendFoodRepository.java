@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface RecommendFoodRepository extends JpaRepository<RecommendFood, Long> {
-
+    List<RecommendFood> findAllByUser(User user);
 }

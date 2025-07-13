@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -39,6 +41,9 @@ public class RecommendRestaurant {
     @Column(nullable = false)
     private boolean isFavorite;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @Builder
     public RecommendRestaurant(RecommendFood recommendFood,
                                String restaurantName,
@@ -47,7 +52,8 @@ public class RecommendRestaurant {
                                String rate,
                                Double latitude,
                                Double longitude,
-                               boolean isFavorite) {
+                               boolean isFavorite,
+                               LocalDateTime createdAt) {
         this.recommendFood = recommendFood;
         this.restaurantName = restaurantName;
         this.restaurantType = restaurantType;
@@ -56,6 +62,7 @@ public class RecommendRestaurant {
         this.latitude = latitude;
         this.longitude = longitude;
         this.isFavorite = isFavorite;
+        this.createdAt=createdAt;
     }
 
 

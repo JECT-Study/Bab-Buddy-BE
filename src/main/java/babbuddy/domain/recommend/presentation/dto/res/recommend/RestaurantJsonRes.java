@@ -1,8 +1,8 @@
-package babbuddy.domain.recommend.presentation.dto.res;
+package babbuddy.domain.recommend.presentation.dto.res.recommend;
 
 import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 
-public record RestaurantRes(
+public record RestaurantJsonRes(
         String name,
         String restaurantType,
         String address,
@@ -10,8 +10,8 @@ public record RestaurantRes(
         double latitude,
         double longitude
 ) {
-    public static RestaurantRes of(RecommendRestaurant recommendRestaurant) {
-        return new RestaurantRes(
+    public static RestaurantJsonRes of(RecommendRestaurant recommendRestaurant) {
+        return new RestaurantJsonRes(
                 recommendRestaurant.getRestaurantName(),
                 recommendRestaurant.getRestaurantType(),
                 recommendRestaurant.getAddress(),

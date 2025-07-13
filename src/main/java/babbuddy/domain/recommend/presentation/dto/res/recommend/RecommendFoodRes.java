@@ -1,6 +1,8 @@
-package babbuddy.domain.recommend.presentation.dto.res;
+package babbuddy.domain.recommend.presentation.dto.res.recommend;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDateTime;
 
 @Schema(description = "추천 음식(음식 이름, 음식 소개, 이미지) 응답")
 public record RecommendFoodRes(
@@ -20,10 +22,13 @@ public record RecommendFoodRes(
 //        String city
 
         @Schema(description = "음식 타입", example = "한식, 양식 등")
-        String category
+        String category,
+        @Schema(description = "생성 시간", example = "2025-07-12 22:24:00.931127")
+        LocalDateTime createdAt
 
 ) {
-    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce, String foodImageUrl, String category) {
-        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, category);
+    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce,
+                                      String foodImageUrl, String category, LocalDateTime createdAt) {
+        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, category, createdAt);
     }
 }
