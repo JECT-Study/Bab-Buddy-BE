@@ -1,4 +1,4 @@
-package babbuddy.domain.recommend.presentation.dto.page.bookmark;
+package babbuddy.domain.user.presentation.dto.page.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;

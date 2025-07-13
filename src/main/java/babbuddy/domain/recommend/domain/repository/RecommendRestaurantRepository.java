@@ -23,6 +23,16 @@ public interface RecommendRestaurantRepository extends JpaRepository<RecommendRe
 
     Page<RecommendRestaurant> findAllByRecommendFoodInAndRestaurantTypeAndFavoriteTrue(
             List<RecommendFood> foods, String restaurantType, Pageable pageable);
+
+
+
+    List<RecommendRestaurant> findAllByRecommendFood(RecommendFood food);
+
+    List<RecommendRestaurant> findAllByRecommendFoodAndRestaurantType(
+            RecommendFood food, String restaurantType);
+
+    List<RecommendRestaurant> findAllByRecommendFoodAndRestaurantTypeNotIn(
+            RecommendFood food, List<String> excludedTypes);
 }
 
 
