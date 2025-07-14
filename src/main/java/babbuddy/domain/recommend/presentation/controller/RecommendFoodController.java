@@ -31,7 +31,7 @@ public class RecommendFoodController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식 추천 성공"),
             @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
-            @ApiResponse(responseCode = "420", description = "openAI 생성 실패, JSON 매핑 실패"),
+            @ApiResponse(responseCode = "420", description = "openAI 생성 실패"),
             @ApiResponse(responseCode = "421", description = "JSON 매핑 실패"),
             @ApiResponse(responseCode = "422", description = "이미지 매핑 실패")
     })
@@ -58,7 +58,7 @@ public class RecommendFoodController {
     public ResponseEntity<?> getRestaurant(
             @PathVariable Long foodId) {
         List<RestaurantSelectRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
-        if (restaurantRes == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주변 음식점이 없습니다.");
+        if (restaurantRes.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주변 음식점이 없습니다.");
         return ResponseEntity.ok(restaurantRes);
     }
 
