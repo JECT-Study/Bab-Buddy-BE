@@ -3,6 +3,7 @@ package babbuddy.domain.user.presentation.controller;
 import babbuddy.domain.dislikefood.presentation.dto.res.GetDisLikeRes;
 import babbuddy.domain.user.application.service.UserService;
 import babbuddy.domain.user.presentation.dto.req.NicknameReq;
+import babbuddy.domain.user.presentation.dto.res.GetUserRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,4 +37,15 @@ public class UserController {
         userService.updateNickname(userId,req);
     }
 
+
+
+    @Operation(summary = "사용자 정보 조회 API ", description = "사용자 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음")
+    })
+    @GetMapping
+    public ResponseEntity<GetUserRes> getUser(@AuthenticationPrincipal String userId) {
+       return ResponseEntity.ok(userService.getUser(userId));
+    }
 }
