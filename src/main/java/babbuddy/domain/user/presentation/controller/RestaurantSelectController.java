@@ -52,7 +52,7 @@ public class RestaurantSelectController {
                                                                                 @RequestParam(defaultValue = "ALL") String category,
                                                                                 @RequestParam(defaultValue = "LATEST") SortOption order,
                                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                                @RequestParam(defaultValue = "10") int size) {
+                                                                                @RequestParam(defaultValue = "6") int size) {
         Category parsedCategory = Category.from(category);
 
 
@@ -71,7 +71,7 @@ public class RestaurantSelectController {
             @RequestParam(defaultValue = "ALL") String category,
             @RequestParam(defaultValue = "LATEST") SortOption order,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         Category parsedCategory = Category.from(category);
 
 
