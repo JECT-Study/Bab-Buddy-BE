@@ -1,7 +1,10 @@
 package babbuddy.domain.user.domain.entity;
 
 
+import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
 
+import babbuddy.domain.allergy.domain.entity.Allergy;
+import babbuddy.domain.recommend.domain.entity.RecommendFood;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +13,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -20,10 +25,16 @@ public class User {
     @Column(unique = true, nullable = false)
     private String id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DislikeFood> dislikeFoods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Allergy> allergies = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecommendFood> recommendFoods = new ArrayList<>();
+
     @Column(nullable = false)
     private String email;
-
-
 
     // 이름
     @Column(nullable = false)
@@ -31,7 +42,9 @@ public class User {
 
     @Column(nullable = true)
     private String profile;
-
+    // 온보딩 완료 여부 필드 추가
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean onboardingCompleted = false;
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -49,10 +62,21 @@ public class User {
         this.name = name;
         this.profile = profile;
         this.role = role;
+        this.onboardingCompleted = false;
     }
-    public void updateNameAndEmailAndProfile(String name, String email, String profile) {
+
+    public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateEmailAndProfile(String email, String profile) {
+
         this.email = email;
         this.profile = profile;
     }
+
+    public void updateCompleteOnboarding(){
+        this.onboardingCompleted = true;
+    }
+
 }

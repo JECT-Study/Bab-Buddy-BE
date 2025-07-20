@@ -67,3 +67,24 @@ oauth2:
     - profile_nickname
     - profile_image
     - account_email
+
+
+openai:
+  api:
+    url: https://api.openai.com
+    key: ${OPENAI_API_KEY}
+  text:
+    model: gpt-4-turbo-preview
+
+
+
+naver:
+  client-id:  ${NAVER_CLIENT_ID}
+  client-secret: ${NAVER_CLIENT_SECRET}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 3000

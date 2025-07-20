@@ -1,10 +1,9 @@
 package babbuddy.domain.oauth2.infra.filter;
 
 
-
-import babbuddy.domain.oauth2.infra.exception.DuplicateLoginException;
-import babbuddy.domain.oauth2.infra.exception.InvalidAccessTokenException;
 import babbuddy.domain.user.domain.entity.Role;
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import babbuddy.global.jwt.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,11 +34,11 @@ public class BabbuddyJWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if(requestURI.contains("/api/oauth2/login") || requestURI.contains("/api/oauth2/callback")) {
+        if (requestURI.contains("/api/oauth2/login") || requestURI.contains("/api/oauth2/callback")) {
             log.info("안녕?");
             String accessToken = jwtUtil.getAccessTokenFromHeaders(request);
-            if(jwtUtil.jwtVerify(accessToken, "access")) {
-                throw new DuplicateLoginException();
+            if (jwtUtil.jwtVerify(accessToken, "access")) {
+                throw new BabbuddyException(ErrorCode.DUPLICATE_LOGIN_NOT_EXIST);
             }
             filterChain.doFilter(request, response);
             return;
@@ -48,13 +47,13 @@ public class BabbuddyJWTFilter extends OncePerRequestFilter {
         String accessToken = jwtUtil.getAccessTokenFromHeaders(request);
         log.info(accessToken);
 
-        if(accessToken == null || accessToken.equals("undefined") || accessToken.equals("null")) {
+        if (accessToken == null || accessToken.equals("undefined") || accessToken.equals("null")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if(!jwtUtil.jwtVerify(accessToken, "access")) {
-            throw new InvalidAccessTokenException();
+        if (!jwtUtil.jwtVerify(accessToken, "access")) {
+            throw new BabbuddyException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
 
         String userId = jwtUtil.getId(accessToken);

@@ -27,7 +27,6 @@ public class KakaoLoginController {
                 .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
 
-
     }
 
 }
