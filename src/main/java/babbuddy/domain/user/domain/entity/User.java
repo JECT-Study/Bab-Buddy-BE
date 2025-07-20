@@ -42,7 +42,9 @@ public class User {
 
     @Column(nullable = true)
     private String profile;
-
+    // 온보딩 완료 여부 필드 추가
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean onboardingCompleted = false;
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -60,6 +62,7 @@ public class User {
         this.name = name;
         this.profile = profile;
         this.role = role;
+        this.onboardingCompleted = false;
     }
 
     public void updateName(String name) {
@@ -72,5 +75,8 @@ public class User {
         this.profile = profile;
     }
 
+    public void updateCompleteOnboarding(){
+        this.onboardingCompleted = true;
+    }
 
 }

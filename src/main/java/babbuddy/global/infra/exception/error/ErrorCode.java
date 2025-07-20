@@ -26,42 +26,42 @@ public enum ErrorCode {
      */
 
     // Common
-    SERVER_UNTRACKED_ERROR(-1, "미등록 서버 에러입니다. 서버 팀에 연락주세요.", 500),
-    OBJECT_NOT_FOUND(-1, "조회된 객체가 없습니다.", 406),
-    INVALID_PARAMETER(-1, "잘못된 파라미터입니다.", 422),
-    PARAMETER_VALIDATION_ERROR(-1, "파라미터 검증 에러입니다.", 422),
-    PARAMETER_GRAMMAR_ERROR(-1, "파라미터 문법 에러입니다.", 422),
+    SERVER_UNTRACKED_ERROR(-100, "미등록 서버 에러입니다. 서버 팀에 연락주세요.", 500),
+    OBJECT_NOT_FOUND(-101, "조회된 객체가 없습니다.", 406),
+    INVALID_PARAMETER(-102, "잘못된 파라미터입니다.", 422),
+    PARAMETER_VALIDATION_ERROR(-103, "파라미터 검증 에러입니다.", 422),
+    PARAMETER_GRAMMAR_ERROR(-104, "파라미터 문법 에러입니다.", 422),
 
     //Auth
-    UNAUTHORIZED(-1, "인증 자격이 없습니다.", 401),
-    FORBIDDEN(-1, "권한이 없습니다.", 403),
-    JWT_ERROR_TOKEN(-1, "잘못된 토큰입니다.", 401),
-    JWT_EXPIRE_TOKEN(-1, "만료된 토큰입니다.", 401),
-    AUTHORIZED_ERROR(-1, "인증 과정 중 에러가 발생했습니다.", 500),
-    INVALID_ACCESS_TOKEN(-1, "Access Token이 유효하지 않습니다.", 401),
-    JWT_UNMATCHED_CLAIMS(-1, "토큰 인증 정보가 일치하지 않습니다", 401),
-    INVALID_REFRESH_TOKEN(-1, "Refresh Token이 유효하지 않습니다.", 401),
-    REFRESH_TOKEN_NOT_EXIST(-1, "Refresh Token이 DB에 존재하지 않습니다.", 401),
-    DUPLICATE_LOGIN_NOT_EXIST(-1, "중복 로그인은 허용되지 않습니다.", 401),
+    UNAUTHORIZED(-200, "인증 자격이 없습니다.", 401),
+    FORBIDDEN(-201, "권한이 없습니다.", 403),
+    JWT_ERROR_TOKEN(-202, "잘못된 토큰입니다.", 401),
+    JWT_EXPIRE_TOKEN(-203, "만료된 토큰입니다.", 401),
+    AUTHORIZED_ERROR(-204, "인증 과정 중 에러가 발생했습니다.", 500),
+    INVALID_ACCESS_TOKEN(-205, "Access Token이 유효하지 않습니다.", 401),
+    JWT_UNMATCHED_CLAIMS(-206, "토큰 인증 정보가 일치하지 않습니다", 401),
+    INVALID_REFRESH_TOKEN(-207, "Refresh Token이 유효하지 않습니다.", 401),
+    REFRESH_TOKEN_NOT_EXIST(-208, "Refresh Token이 DB에 존재하지 않습니다.", 401),
+    DUPLICATE_LOGIN_NOT_EXIST(-209, "중복 로그인은 허용되지 않습니다.", 401),
 
     // user
-    INVALID_ROLE(-1,"해당 역할이 존재하지 않습니다.", 406),
-    USER_NOT_EXIST(-1, "존재하지 않는 유저입니다.", 406),
-    ALLERGY_NOT_EXIST(-1, "존재하지 않는 필드입니다.", 400),
+    INVALID_ROLE(-210,"해당 역할이 존재하지 않습니다.", 406),
+    USER_NOT_EXIST(-211, "존재하지 않는 유저입니다.", 406),
+    ALLERGY_NOT_EXIST(-212, "존재하지 않는 필드입니다.", 400),
 
     // group
-    GROUP_NOT_EXIST(-1, "존재하지 않는 그룹 방입니다.", 500),
+    GROUP_NOT_EXIST(-300, "존재하지 않는 그룹 방입니다.", 500),
 
     // food
-    FOOD_NOT_EXIST(-1, "존재하지 않는 음식입니다.", 400),
-    RESTAURANT_NOT_EXIST(-1, "존재하지 않는 음식점입니다.", 400),
-    JSON_MAPPING_FAIL(-1, "JSON 매핑 실패입니다.", 421),
-    IMAGE_MAPPING_FAIL(-1, "이미지를 갖고 오지 못했습니다.", 422),
-    FOOD_NAME_DISTINCT(-1, "음식 이름이 중복됩니다.", 423),
+    FOOD_NOT_EXIST(-400, "존재하지 않는 음식입니다.", 400),
+    RESTAURANT_NOT_EXIST(-401, "존재하지 않는 음식점입니다.", 400),
+    JSON_MAPPING_FAIL(-402, "JSON 매핑 실패입니다.", 421),
+    IMAGE_MAPPING_FAIL(-403, "이미지를 갖고 오지 못했습니다.", 422),
+    FOOD_NAME_DISTINCT(-404, "음식 이름이 중복됩니다.", 423),
 
 
     // openAI
-    OPENAI_NOT_EXIST(-1, "내용을 생성할수가 없습니다.", 420);
+    OPENAI_NOT_EXIST(-405, "내용을 생성할수가 없습니다.", 420);
 
 
     private final int code;
