@@ -110,7 +110,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
         List<RecommendRestaurant> allRecommendFood = recommendRestaurantRepository.findByRecommendFood(recommendFood);
 
-        if (allRecommendFood.isEmpty()) throw new BabbuddyException(ErrorCode.FOOD_NOT_EXIST);
+
 
         List<RestaurantSelectRes> result = new ArrayList<>();
 

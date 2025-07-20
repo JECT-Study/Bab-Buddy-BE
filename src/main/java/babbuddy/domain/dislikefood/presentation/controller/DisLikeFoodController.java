@@ -28,7 +28,7 @@ public class DisLikeFoodController {
     @Operation(summary = "비선호 음식 조회", description = "사용자의 비선호 음식 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비선호 음식 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음")
+            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음")
     })
     @GetMapping
     public ResponseEntity<List<GetDisLikeRes>> getDisLikeFood(@AuthenticationPrincipal String userId){
@@ -38,7 +38,7 @@ public class DisLikeFoodController {
     @Operation(summary = "비선호 음식 등록", description = "사용자의 비선호 음식을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비선호 음식 등록 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
+            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음"),
             @ApiResponse(responseCode = "423", description = "음식 이름이 중복됩니다.")
     })
     @PostMapping
@@ -50,7 +50,7 @@ public class DisLikeFoodController {
     @Operation(summary = "비선호 음식 삭제", description = "사용자의 비선호 음식 중 하나를 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비선호 음식 삭제 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 및 비선호 음식 존재하지 않음")
+            @ApiResponse(responseCode = "404", description = "유저 및 비선호 음식 존재하지 않음")
     })
     @DeleteMapping("/{foodId}")
     public void deleteDisLikeFood(@PathVariable Long foodId,
