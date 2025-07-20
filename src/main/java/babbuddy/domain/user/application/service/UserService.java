@@ -10,4 +10,10 @@ public interface UserService {
 
     GetUserRes getUser(String userId);
 
+
+    // 온보딩 상태 확인
+    boolean isOnboardingCompleted(String userId);
+
+    // 온보딩 완료 처리
+    void completeOnboarding(String userId);
 }

@@ -36,4 +36,21 @@ public class UserServiceImpl implements UserService {
 
         return GetUserRes.of(user);
     }
+
+    @Override
+    public boolean isOnboardingCompleted(String userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
+
+        return user.isOnboardingCompleted();
+    }
+
+    @Override
+    public void completeOnboarding(String userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
+
+        user.updateCompleteOnboarding();
+        log.info("사용자 {}의 온보딩이 완료되었습니다.", userId);
+    }
 }
