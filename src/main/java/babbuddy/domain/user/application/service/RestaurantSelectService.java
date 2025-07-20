@@ -1,7 +1,7 @@
-package babbuddy.domain.user.application;
+package babbuddy.domain.user.application.service;
 
-import babbuddy.domain.user.presentation.dto.page.bookmark.Category;
-import babbuddy.domain.user.presentation.dto.page.bookmark.SortOption;
+import babbuddy.domain.user.presentation.dto.paging.bookmark.Category;
+import babbuddy.domain.user.presentation.dto.paging.bookmark.SortOption;
 import babbuddy.domain.user.presentation.dto.req.RestaurantBookmarkReq;
 
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;

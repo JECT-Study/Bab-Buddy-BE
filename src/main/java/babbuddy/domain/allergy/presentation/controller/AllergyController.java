@@ -28,7 +28,7 @@ public class AllergyController {
     @Operation(summary = "알레르기 조회", description = "사용자의 알레르기 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "알레르기 정보 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "유저 없음")
+            @ApiResponse(responseCode = "404", description = "유저 없음")
     })
     @GetMapping
     public ResponseEntity<List<AllergyGetRes>> getAllergy(@AuthenticationPrincipal String userId) {
@@ -40,8 +40,8 @@ public class AllergyController {
                     "알레르기 선택된 목록 전체를 전달해주세요. 이전에 선택된거라해도 다 보내주세요.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "알레르기 등록 성공"),
-            @ApiResponse(responseCode = "400", description = "알레르기 정보 없음(잘 못 입력 했을때)"),
-            @ApiResponse(responseCode = "401", description = "유저 없음")
+            @ApiResponse(responseCode = "400", description = "알레르기 정보 없음(잘 못 입력 했을때) -212") ,
+            @ApiResponse(responseCode = "404", description = "유저 없음 -211")
     })
     @PostMapping
     public void postAllergy(@RequestBody @Valid AllergyPostReq allergyPostReq,

@@ -30,9 +30,9 @@ public class RecommendFoodController {
     @Operation(summary = "음식 추천", description = "사용자 정보 기반으로 음식을 추천합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식 추천 성공"),
-            @ApiResponse(responseCode = "400", description = "유저 존재하지 않음"),
-            @ApiResponse(responseCode = "420", description = "openAI 생성 실패"),
-            @ApiResponse(responseCode = "421", description = "JSON 매핑 실패"),
+            @ApiResponse(responseCode = "404", description = "유저 존재하지 않음"),
+            @ApiResponse(responseCode = "500", description = "openAI 생성 실패"),
+            @ApiResponse(responseCode = "422", description = "JSON 매핑 실패"),
             @ApiResponse(responseCode = "422", description = "이미지 매핑 실패")
     })
     @PostMapping
@@ -52,7 +52,7 @@ public class RecommendFoodController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
             @ApiResponse(responseCode = "204", description = "데이터 없음"),
-            @ApiResponse(responseCode = "400", description = "유저 및 음식점 존재하지 않음"),
+            @ApiResponse(responseCode = "404", description = "음식점 존재하지 않음"),
     })
     @GetMapping("/{foodId}")
     public ResponseEntity<?> getRestaurant(

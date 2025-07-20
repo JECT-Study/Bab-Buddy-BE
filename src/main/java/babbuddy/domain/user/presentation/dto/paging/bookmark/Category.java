@@ -1,5 +1,7 @@
-package babbuddy.domain.user.presentation.dto.page.bookmark;
+package babbuddy.domain.user.presentation.dto.paging.bookmark;
 
+import babbuddy.global.infra.exception.error.BabbuddyException;
+import babbuddy.global.infra.exception.error.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,6 @@ public enum Category {
         return Arrays.stream(Category.values())
                 .filter(c -> c.name().equalsIgnoreCase(input) || input.equals(c.dbValue))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown category: " + input));
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.INVALID_CATEGORY));
     }
 }

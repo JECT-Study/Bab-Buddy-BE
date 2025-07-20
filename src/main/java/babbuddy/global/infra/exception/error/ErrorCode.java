@@ -45,23 +45,24 @@ public enum ErrorCode {
     DUPLICATE_LOGIN_NOT_EXIST(-209, "중복 로그인은 허용되지 않습니다.", 401),
 
     // user
-    INVALID_ROLE(-210,"해당 역할이 존재하지 않습니다.", 406),
-    USER_NOT_EXIST(-211, "존재하지 않는 유저입니다.", 406),
+    INVALID_ROLE(-210, "해당 역할이 존재하지 않습니다.", 400),
+    USER_NOT_EXIST(-211, "존재하지 않는 유저입니다.", 404),
     ALLERGY_NOT_EXIST(-212, "존재하지 않는 필드입니다.", 400),
 
     // group
-    GROUP_NOT_EXIST(-300, "존재하지 않는 그룹 방입니다.", 500),
+    GROUP_NOT_EXIST(-300, "존재하지 않는 그룹 방입니다.", 404),
 
     // food
-    FOOD_NOT_EXIST(-400, "존재하지 않는 음식입니다.", 400),
-    RESTAURANT_NOT_EXIST(-401, "존재하지 않는 음식점입니다.", 400),
-    JSON_MAPPING_FAIL(-402, "JSON 매핑 실패입니다.", 421),
+    FOOD_NOT_EXIST(-400, "존재하지 않는 음식입니다.", 404),
+    RESTAURANT_NOT_EXIST(-401, "존재하지 않는 음식점입니다.", 404),
+    JSON_MAPPING_FAIL(-402, "JSON 매핑 실패입니다.", 422),
     IMAGE_MAPPING_FAIL(-403, "이미지를 갖고 오지 못했습니다.", 422),
-    FOOD_NAME_DISTINCT(-404, "음식 이름이 중복됩니다.", 423),
-
+    FOOD_NAME_DISTINCT(-404, "음식 이름이 중복됩니다.", 409),
+    INVALID_CATEGORY(-405, "존재하지 않는 카테고리입니다.", 400),
 
     // openAI
-    OPENAI_NOT_EXIST(-405, "내용을 생성할수가 없습니다.", 420);
+    OPENAI_NOT_EXIST(-500, "내용을 생성할 수 없습니다.", 500);
+
 
 
     private final int code;

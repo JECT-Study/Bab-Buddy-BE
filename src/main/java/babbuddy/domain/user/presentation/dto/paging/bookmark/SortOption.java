@@ -1,4 +1,4 @@
-package babbuddy.domain.user.presentation.dto.page.bookmark;
+package babbuddy.domain.user.presentation.dto.paging.bookmark;
 
 public enum SortOption {
     LATEST,     // createdAt DESC

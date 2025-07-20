@@ -1,12 +1,12 @@
-package babbuddy.domain.user.application.service;
+package babbuddy.domain.user.application.service.impl;
 
-import babbuddy.domain.user.application.RestaurantSelectService;
+import babbuddy.domain.user.application.service.RestaurantSelectService;
 import babbuddy.domain.recommend.domain.entity.RecommendFood;
 import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 import babbuddy.domain.recommend.domain.repository.RecommendFoodRepository;
 import babbuddy.domain.recommend.domain.repository.RecommendRestaurantRepository;
-import babbuddy.domain.user.presentation.dto.page.bookmark.Category;
-import babbuddy.domain.user.presentation.dto.page.bookmark.SortOption;
+import babbuddy.domain.user.presentation.dto.paging.bookmark.Category;
+import babbuddy.domain.user.presentation.dto.paging.bookmark.SortOption;
 import babbuddy.domain.user.presentation.dto.req.RestaurantBookmarkReq;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
 import babbuddy.domain.user.domain.entity.User;
