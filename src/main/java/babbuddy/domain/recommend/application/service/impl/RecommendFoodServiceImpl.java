@@ -88,7 +88,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         RecommendFood saved = recommendFoodRepository.save(recommendFood);
 
 
-        return RecommendFoodRes.of(saved.getId(), foodName, foodIntroduce, foodImageUrl, category,saved.getCreatedAt());
+        return RecommendFoodRes.of(saved.getId(), user.getName(), foodName, foodIntroduce, foodImageUrl, category,saved.getCreatedAt());
     }
 
     @Override
