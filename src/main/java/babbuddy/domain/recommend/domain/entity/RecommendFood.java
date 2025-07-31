@@ -30,6 +30,9 @@ public class RecommendFood {
     private List<RecommendRestaurant> recommendRestaurants = new ArrayList<>();
 
     @Column(nullable = false)
+    private String foodImage;
+
+    @Column(nullable = false)
     private String foodName;
 
     @Column(nullable = false)
@@ -44,9 +47,10 @@ public class RecommendFood {
     private LocalDateTime createdAt;
 
     @Builder
-    public RecommendFood(User user, String foodName, String foodIntroduce, String foodType) {
+    public RecommendFood(User user, String foodName, String foodImage, String foodIntroduce, String foodType) {
         this.user = user;
         this.foodName = foodName;
+        this.foodImage = foodImage;
         this.foodIntroduce = foodIntroduce;
         this.foodType =foodType;
     }

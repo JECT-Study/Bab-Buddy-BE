@@ -2,6 +2,7 @@ package babbuddy.domain.recommend.presentation.controller;
 
 import babbuddy.domain.recommend.application.service.RecommendFoodService;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendAllRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
@@ -60,6 +61,19 @@ public class RecommendFoodController {
         List<RestaurantSelectRes> restaurantRes = recommendFoodService.restaurantAll(foodId);
         if (restaurantRes.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주변 음식점이 없습니다.");
         return ResponseEntity.ok(restaurantRes);
+    }
+
+
+    @Operation(summary = "추천 음식 및 음식점 조회", description = "링크 공유용 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "음식점 존재하지 않음"),
+    })
+    @GetMapping("/all/{foodId}")
+    public ResponseEntity<RecommendAllRes> getRecommendAll(
+            @PathVariable Long foodId) {
+
+        return ResponseEntity.ok(recommendFoodService.recommendALL(foodId));
     }
 
 

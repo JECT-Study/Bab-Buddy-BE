@@ -3,6 +3,7 @@ package babbuddy.domain.dislikefood.presentation.controller;
 import babbuddy.domain.dislikefood.application.service.DisLikeFoodService;
 import babbuddy.domain.dislikefood.presentation.dto.req.PostDislikeReq;
 import babbuddy.domain.dislikefood.presentation.dto.res.GetDisLikeRes;
+import babbuddy.domain.dislikefood.presentation.dto.res.PostDisLikeRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -31,7 +32,7 @@ public class DisLikeFoodController {
             @ApiResponse(responseCode = "404", description = "유저 존재하지 않음")
     })
     @GetMapping
-    public ResponseEntity<List<GetDisLikeRes>> getDisLikeFood(@AuthenticationPrincipal String userId){
+    public ResponseEntity<List<GetDisLikeRes>> getDisLikeFood(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok(foodService.getDisLikeFood(userId));
     }
 
@@ -42,9 +43,9 @@ public class DisLikeFoodController {
             @ApiResponse(responseCode = "423", description = "음식 이름이 중복됩니다.")
     })
     @PostMapping
-    public void postDisLikeFood(@RequestBody @Valid PostDislikeReq req,
-                                @AuthenticationPrincipal String userId){
-        foodService.postDisLikeFood(req, userId);
+    public ResponseEntity<PostDisLikeRes> postDisLikeFood(@RequestBody @Valid PostDislikeReq req,
+                                                          @AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok(foodService.postDisLikeFood(req, userId));
     }
 
     @Operation(summary = "비선호 음식 삭제", description = "사용자의 비선호 음식 중 하나를 삭제합니다.")
@@ -54,7 +55,7 @@ public class DisLikeFoodController {
     })
     @DeleteMapping("/{foodId}")
     public void deleteDisLikeFood(@PathVariable Long foodId,
-                                  @AuthenticationPrincipal String userId){
+                                  @AuthenticationPrincipal String userId) {
         foodService.deleteDisLikeFood(foodId, userId);
     }
 }

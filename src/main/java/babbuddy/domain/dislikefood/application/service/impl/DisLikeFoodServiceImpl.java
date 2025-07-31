@@ -5,6 +5,7 @@ import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
 import babbuddy.domain.dislikefood.domain.repository.DisLikeFoodRepository;
 import babbuddy.domain.dislikefood.presentation.dto.req.PostDislikeReq;
 import babbuddy.domain.dislikefood.presentation.dto.res.GetDisLikeRes;
+import babbuddy.domain.dislikefood.presentation.dto.res.PostDisLikeRes;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
@@ -41,7 +42,7 @@ public class DisLikeFoodServiceImpl implements DisLikeFoodService {
     }
 
     @Override
-    public void postDisLikeFood(PostDislikeReq req, String userId) {
+    public PostDisLikeRes postDisLikeFood(PostDislikeReq req, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
 
@@ -49,9 +50,12 @@ public class DisLikeFoodServiceImpl implements DisLikeFoodService {
         if (dislikeFood == null) {
             DislikeFood food = DislikeFood.builder().foodName(req.foodName()).user(user).build();
             disLikeFoodRepository.save(food);
+
+            return PostDisLikeRes.of(food.getId(), food.getFoodName());
         } else {
             throw new BabbuddyException(ErrorCode.FOOD_NAME_DISTINCT);
         }
+
     }
 
     @Override
