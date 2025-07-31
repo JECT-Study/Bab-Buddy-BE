@@ -12,6 +12,7 @@ import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 import babbuddy.domain.recommend.domain.repository.RecommendFoodRepository;
 import babbuddy.domain.recommend.domain.repository.RecommendRestaurantRepository;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendAllRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
@@ -81,6 +82,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
         RecommendFood recommendFood = RecommendFood.builder()
                 .foodName(foodName)
+                .foodImage(foodImageUrl)
                 .foodIntroduce(foodIntroduce)
                 .foodType(category)
                 .user(user)
@@ -88,7 +90,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         RecommendFood saved = recommendFoodRepository.save(recommendFood);
 
 
-        return RecommendFoodRes.of(saved.getId(), foodName, foodIntroduce, foodImageUrl, category,saved.getCreatedAt());
+        return RecommendFoodRes.of(saved.getId(), user.getName(), foodName, foodIntroduce, foodImageUrl, category, saved.getCreatedAt());
     }
 
     @Override
@@ -100,7 +102,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
          * 여기서 호출만 위임
          */
         // restaurantAsyncService.recommendRestaurantsAsyncV1(address, res, city); // openai용
-         restaurantAsyncService.recommendRestaurantsAsyncV2(address, res, category); // 네이버 지역 검색 api
+        restaurantAsyncService.recommendRestaurantsAsyncV2(address, res, category); // 네이버 지역 검색 api
     }
 
     @Override
@@ -111,7 +113,6 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         List<RecommendRestaurant> allRecommendFood = recommendRestaurantRepository.findByRecommendFood(recommendFood);
 
 
-
         List<RestaurantSelectRes> result = new ArrayList<>();
 
         for (RecommendRestaurant recommendRestaurant : allRecommendFood) {
@@ -119,6 +120,27 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         }
 
         return result;
+
+    }
+
+    @Override
+    public RecommendAllRes recommendALL(Long foodId) {
+        RecommendFood recommendFood = recommendFoodRepository.findById(foodId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
+
+        List<RecommendRestaurant> allRecommendFood = recommendRestaurantRepository.findByRecommendFood(recommendFood);
+
+        List<RestaurantSelectRes> restaurantALL = new ArrayList<>();
+
+        for (RecommendRestaurant recommendRestaurant : allRecommendFood) {
+            restaurantALL.add(RestaurantSelectRes.of(recommendRestaurant));
+        }
+
+        RecommendFoodRes recommendFoodRes = RecommendFoodRes.of(recommendFood.getId(), recommendFood.getUser().getName(), recommendFood.getFoodName(),
+                recommendFood.getFoodIntroduce(), recommendFood.getFoodImage(),
+                recommendFood.getFoodType().toString(), recommendFood.getCreatedAt());
+
+        return RecommendAllRes.of(restaurantALL, recommendFoodRes);
 
     }
 
@@ -191,6 +213,7 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         StringBuilder info = sb.deleteCharAt(sb.length() - 1);
         return info.toString();
     }
+
     private String getFoodImageUrlV1(String foodName) {
 
         try {

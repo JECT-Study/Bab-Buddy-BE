@@ -1,6 +1,7 @@
 package babbuddy.domain.recommend.application.service;
 
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendAllRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
@@ -14,4 +15,6 @@ public interface RecommendFoodService {
     void doRestaurantAsync(String address, RecommendFoodRes res, String city);
 
     List<RestaurantSelectRes> restaurantAll(Long foodId);
+
+    RecommendAllRes recommendALL(Long foodId);
 }

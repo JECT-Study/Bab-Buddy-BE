@@ -10,6 +10,9 @@ public record RecommendFoodRes(
         @Schema(description = "음식 ID", example = "1")
         Long id,
 
+        @Schema(description = "사용자 이름", example = "최승호")
+        String name,
+
         @Schema(description = "추천 음식 이름", example = "삼겹살")
         String foodName,
         @Schema(description = "음식 소개", example = " “오늘 앱이 추천한 음식은 삽겹살! 🍊 친구야, 너도 한번 받아볼래?”")
@@ -27,8 +30,8 @@ public record RecommendFoodRes(
         LocalDateTime createdAt
 
 ) {
-    public static RecommendFoodRes of(Long id, String foodName, String foodIntroduce,
+    public static RecommendFoodRes of(Long id, String name, String foodName, String foodIntroduce,
                                       String foodImageUrl, String category, LocalDateTime createdAt) {
-        return new RecommendFoodRes(id, foodName, foodIntroduce, foodImageUrl, category, createdAt);
+        return new RecommendFoodRes(id, name, foodName, foodIntroduce, foodImageUrl, category, createdAt);
     }
 }
