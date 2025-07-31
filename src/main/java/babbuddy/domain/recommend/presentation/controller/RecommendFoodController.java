@@ -53,7 +53,7 @@ public class RecommendFoodController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
             @ApiResponse(responseCode = "204", description = "데이터 없음"),
-            @ApiResponse(responseCode = "404", description = "음식점 존재하지 않음"),
+            @ApiResponse(responseCode = "404", description = "음식 존재하지 않음"),
     })
     @GetMapping("/{foodId}")
     public ResponseEntity<?> getRestaurant(
@@ -66,8 +66,8 @@ public class RecommendFoodController {
 
     @Operation(summary = "추천 음식 및 음식점 조회", description = "링크 공유용 입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "음식점 3개 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "음식점 존재하지 않음"),
+            @ApiResponse(responseCode = "200", description = "추천 화면 데이터 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "음식 존재하지 않음"),
     })
     @GetMapping("/all/{foodId}")
     public ResponseEntity<RecommendAllRes> getRecommendAll(
