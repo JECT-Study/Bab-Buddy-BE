@@ -53,7 +53,7 @@ public class SecurityConfig {
                 // CORS 설정 파일로 빼기
                 .cors((cors) -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOriginPatterns(List.of("http://10.245.22.230:3000", "http://localhost:3000"));
+                    config.setAllowedOriginPatterns(List.of("https://www.ricebuddy.site","http://10.245.22.230:3000", "http://localhost:3000"));
                     config.setAllowedMethods(Collections.singletonList("*"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
