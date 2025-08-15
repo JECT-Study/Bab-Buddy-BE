@@ -60,9 +60,19 @@ public enum ErrorCode {
     FOOD_NAME_DISTINCT(-404, "음식 이름이 중복됩니다.", 409),
     INVALID_CATEGORY(-405, "존재하지 않는 카테고리입니다.", 400),
 
+    // vote
+    USER_NOT_FOUND(-400, "유저가 존재하지 않습니다." , -400),
+    ROOM_NOT_FOUND(-400, "투표방이 존재하지 않습니다.",-400),
+    MENU_NOT_FOUND(-400, "메뉴가 존재하지 않습니다.",-400),
+    FORBIDDEN_MENU_DELETE(-400, "해당 메뉴에 대한 삭제 권한이 없습니다.", -400),
+    ALREADY_VOTED(-400, "이미 투표한 사용자입니다.",-400),
+    VOTE_NOT_FOUND(-400, "투표 기록이 없습니다.",-400),
+    ROOM_NOT_CLOSED(-400, "아직 종료되지 않은 투표방입니다.",-400),
+    VOTE_FORBIDDEN(-400 ,"잘못된 투표입니다" ,-400),
+    FORBIDDEN_MENU_UPDATE(-400 , "잘못된 메뉴 수정입니다." , -400),
+
     // openAI
     OPENAI_NOT_EXIST(-500, "내용을 생성할 수 없습니다.", 500);
-
 
 
     private final int code;
