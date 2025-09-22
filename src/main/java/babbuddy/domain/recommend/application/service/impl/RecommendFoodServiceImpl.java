@@ -166,7 +166,6 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
             log.error("❌ 네이버 이미지 API 호출 실패: {}", e.getMessage(), e);
             return null;
         }
-
     }
 
 
