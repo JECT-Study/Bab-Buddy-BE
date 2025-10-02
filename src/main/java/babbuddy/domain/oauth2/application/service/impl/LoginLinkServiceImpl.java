@@ -23,7 +23,10 @@ public class LoginLinkServiceImpl implements LoginLinkService {
     public String getLoginLink(HttpServletRequest request) {
         // React가 어디서 요청했는지 확인
         String origin = request.getHeader("Origin");
+        log.info(origin);
         String state = (origin != null && origin.contains("localhost")) ? "local" : "prod";
+
+        log.info(state);
 
         return baseUrl +
                 "?client_id=" + clientId +
