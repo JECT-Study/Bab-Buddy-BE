@@ -20,9 +20,9 @@ public class LoginLinkServiceImpl implements LoginLinkService {
     private String redirectUri;
 
     @Override
-    public String getLoginLink(HttpServletRequest request) {
+    public String getLoginLink(String origin) {
         // React가 어디서 요청했는지 확인
-        String origin = request.getHeader("Origin");
+
         log.info(origin);
         String state = (origin != null && origin.contains("localhost")) ? "local" : "prod";
 

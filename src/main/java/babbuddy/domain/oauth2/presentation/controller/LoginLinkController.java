@@ -21,8 +21,9 @@ public class LoginLinkController {
     @GetMapping("/login")
     public ResponseEntity<Void> loginPage(HttpServletRequest request) {
         // 로그인 링크 생성 시 state를 포함
-        String loginLink = loginLinkService.getLoginLink(request);
         String origin = request.getParameter("origin");
+        String loginLink = loginLinkService.getLoginLink(origin);
+
 
         log.info(origin);
         return ResponseEntity
