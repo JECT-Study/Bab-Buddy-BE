@@ -11,7 +11,9 @@ import babbuddy.domain.user.presentation.dto.req.RestaurantBookmarkReq;
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
+import babbuddy.domain.user.presentation.dto.res.FoodPageResponse;
 import babbuddy.domain.user.presentation.dto.res.FoodWithRestaurantsRes;
+import babbuddy.domain.user.presentation.dto.res.RestaurantPageResponse;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,41 +51,41 @@ public class RestaurantSelectServiceImpl implements RestaurantSelectService {
     }
 
     @Override
-    public Page<RestaurantSelectRes> getBookmarks(String userId, Category category, SortOption sortOption, int page, int size) {
+    public RestaurantPageResponse getBookmarks(
+            String userId, Category category, SortOption sortOption, int page, int size) {
+
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
 
         List<RecommendFood> foods = recommendFoodRepository.findAllByUser(user);
 
         Sort sort = Sort.by("createdAt");
-        sort = (sortOption == SortOption.OLDEST)
-                ? sort.ascending()
-                : sort.descending();   // 기본 최신순
+        sort = (sortOption == SortOption.OLDEST) ? sort.ascending() : sort.descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        log.info(category.getDbValue());
-        // 카테고리-별 조회
         Page<RecommendRestaurant> entities;
         if (category == Category.ALL) {
-            entities = restaurantRepository
-                    .findAllByRecommendFoodInAndFavoriteTrue(foods, pageable);
+            entities = restaurantRepository.findAllByRecommendFoodInAndFavoriteTrue(foods, pageable);
         } else if (category == Category.ETC) {
             List<String> excludedTypes = List.of("한식", "중식", "일식", "양식");
-            entities = restaurantRepository
-                    .findAllByRecommendFoodInAndRestaurantTypeNotInAndFavoriteTrue(
-                            foods, excludedTypes, pageable);
+            entities = restaurantRepository.findAllByRecommendFoodInAndRestaurantTypeNotInAndFavoriteTrue(
+                    foods, excludedTypes, pageable);
         } else {
-            entities = restaurantRepository
-                    .findAllByRecommendFoodInAndRestaurantTypeAndFavoriteTrue(
-                            foods, category.getDbValue(), pageable);
+            entities = restaurantRepository.findAllByRecommendFoodInAndRestaurantTypeAndFavoriteTrue(
+                    foods, category.getDbValue(), pageable);
         }
 
-        return entities.map(RestaurantSelectRes::of);
+        // ✅ Page<RecommendRestaurant> → Page<RestaurantSelectRes>
+        Page<RestaurantSelectRes> mapped = entities.map(RestaurantSelectRes::of);
+
+        // ✅ 응답 DTO로 변환
+        return RestaurantPageResponse.of(mapped);
     }
 
+
     @Override
-    public Page<FoodWithRestaurantsRes> getGroupBy(String userId, Category category, SortOption sortOption, int page, int size) {
+    public FoodPageResponse getGroupBy(String userId, Category category, SortOption sortOption, int page, int size) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) throw new BabbuddyException(ErrorCode.USER_NOT_EXIST);
 
@@ -93,7 +96,6 @@ public class RestaurantSelectServiceImpl implements RestaurantSelectService {
                 .map(food -> {
                     List<RecommendRestaurant> restaurants;
 
-                    // isFavorite 조건 ❌ → 모든 음식점 다 가져오기
                     if (category == Category.ALL) {
                         restaurants = restaurantRepository.findAllByRecommendFood(food);
                     } else if (category == Category.ETC) {
@@ -111,17 +113,32 @@ public class RestaurantSelectServiceImpl implements RestaurantSelectService {
                             .map(RestaurantSelectRes::of)
                             .toList();
 
-                    return FoodWithRestaurantsRes.of(food.getFoodName(), food.getCreatedAt() ,resList);
+                    return FoodWithRestaurantsRes.of(food.getFoodName(), food.getCreatedAt(), resList);
                 })
                 .filter(Objects::nonNull)
                 .toList();
 
-        // 음식 기준 페이징
-        int total = filtered.size();
+        // 정렬
+        Comparator<FoodWithRestaurantsRes> comparator =
+                (sortOption == SortOption.LATEST)
+                        ? Comparator.comparing(FoodWithRestaurantsRes::createAt).reversed()
+                        : Comparator.comparing(FoodWithRestaurantsRes::createAt);
+
+        List<FoodWithRestaurantsRes> sorted = filtered.stream()
+                .sorted(comparator)
+                .toList();
+
+        // 페이징
+        int total = sorted.size();
         int fromIndex = Math.min(page * size, total);
         int toIndex = Math.min(fromIndex + size, total);
-        List<FoodWithRestaurantsRes> pagedList = filtered.subList(fromIndex, toIndex);
+        List<FoodWithRestaurantsRes> pagedList = sorted.subList(fromIndex, toIndex);
 
-        return new PageImpl<>(pagedList, PageRequest.of(page, size), total);
+        Page<FoodWithRestaurantsRes> resultPage = new PageImpl<>(pagedList, PageRequest.of(page, size), total);
+
+        // ✅ 페이지 Response로 감싸서 반환
+        return FoodPageResponse.of(resultPage);
     }
+
+
 }

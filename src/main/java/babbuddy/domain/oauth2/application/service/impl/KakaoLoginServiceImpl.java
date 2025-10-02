@@ -7,6 +7,7 @@ import babbuddy.domain.oauth2.presentation.dto.response.oatuh.OAuth2UserResponse
 import babbuddy.domain.user.domain.entity.Role;
 import babbuddy.global.jwt.domain.entity.KakaoJsonWebToken;
 import babbuddy.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     private final KakaoJsonWebTokenRepository kakaoJsonWebTokenRepository;
 
     @Override
-    public String login(String code, HttpServletResponse response) {
+    public String login(String code, HttpServletResponse response, String state) {
         OAuth2TokenResponse oAuth2TokenResponse = KakaoAccessTokenAndRefreshTokenService.getAccessTokenAndRefreshToken(code);
 
         OAuth2UserResponse oAuth2UserResponse = KakaoUserService.getUser(oAuth2TokenResponse.accessToken());
@@ -58,18 +59,17 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
         // 쿠키 설정
         response.addHeader("Set-Cookie", refreshTokenCookie);
-        log.info("✅ 엑세스:{}", accessToken );
+        log.info("✅ 엑세스:{}", accessToken);
         log.info("✅ 리프레쉬:{}", refreshTokenCookie);
 
-        //  프론트엔드 리다이렉트 URL 생성 (accessToken만 전달)
-        return redirectUri + "?accessToken=" + accessToken;
-//        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.get("access_token"));
-//        response.addHeader(HttpHeaders.SET_COOKIE, tokens.get("refresh_token_cookie"));
+        String frontUrl;
+        if ("local".equals(state)) {
+            frontUrl = "http://localhost:3000/oauth-success";
+        } else {
+            frontUrl = "https://www.ricebuddy.site/oauth-success";
+        }
 
-//        response.setStatus(HttpServletResponse.SC_OK);
-//        response.setContentType("application/json");
-
-//        response.getWriter().write("Successfully Login");
+        return frontUrl + "?accessToken=" + accessToken;
 
     }
 }
