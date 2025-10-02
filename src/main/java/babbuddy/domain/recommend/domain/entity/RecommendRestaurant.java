@@ -68,6 +68,6 @@ public class RecommendRestaurant {
 
 
     public void updateIsFavorite(boolean isFavorite) {
-        this.favorite = favorite;
+        this.favorite = isFavorite;
     }
 }
