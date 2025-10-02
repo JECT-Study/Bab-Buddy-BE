@@ -6,7 +6,9 @@ import babbuddy.domain.user.presentation.dto.paging.bookmark.SortOption;
 import babbuddy.domain.user.presentation.dto.req.RestaurantBookmarkReq;
 
 import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
+import babbuddy.domain.user.presentation.dto.res.FoodPageResponse;
 import babbuddy.domain.user.presentation.dto.res.FoodWithRestaurantsRes;
+import babbuddy.domain.user.presentation.dto.res.RestaurantPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -50,16 +52,16 @@ public class RestaurantSelectController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 카테고리입니다. -405"),
     })
     @GetMapping("/history")
-    public ResponseEntity<List<FoodWithRestaurantsRes>> getRestaurantHistoryALL(@AuthenticationPrincipal String userId,
-                                                                                @RequestParam(defaultValue = "ALL") String category,
-                                                                                @RequestParam(defaultValue = "LATEST") SortOption order,
-                                                                                @RequestParam(defaultValue = "0") int page,
-                                                                                @RequestParam(defaultValue = "6") int size) {
+    public ResponseEntity<FoodPageResponse> getRestaurantHistoryALL(@AuthenticationPrincipal String userId,
+                                                                    @RequestParam(defaultValue = "ALL") String category,
+                                                                    @RequestParam(defaultValue = "LATEST") SortOption order,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "6") int size) {
         Category parsedCategory = Category.from(category);
 
 
-        Page<FoodWithRestaurantsRes> result = restaurantService.getGroupBy(userId, parsedCategory, order, page, size);
-        return ResponseEntity.ok(result.getContent());
+        return ResponseEntity.ok(restaurantService.getGroupBy(userId, parsedCategory, order, page, size));
+
     }
 
     @Operation(summary = "음식점 조회(마이페이지용 - 북마크)", description = "사용자가 기록한 모든 음식점들을 조회합니다.")
@@ -69,7 +71,7 @@ public class RestaurantSelectController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 카테고리입니다. -405"),
     })
     @GetMapping("/bookmarks")
-    public ResponseEntity<List<RestaurantSelectRes>> getRestaurantBookmarks(
+    public ResponseEntity<RestaurantPageResponse> getRestaurantBookmarks(
             @AuthenticationPrincipal String userId,
             @RequestParam(defaultValue = "ALL") String category,
             @RequestParam(defaultValue = "LATEST") SortOption order,
@@ -77,10 +79,7 @@ public class RestaurantSelectController {
             @RequestParam(defaultValue = "12") int size) {
         Category parsedCategory = Category.from(category);
 
-
-        Page<RestaurantSelectRes> result =
-                restaurantService.getBookmarks(userId, parsedCategory, order, page, size);
-        return ResponseEntity.ok(result.getContent());
+        return ResponseEntity.ok(restaurantService.getBookmarks(userId, parsedCategory, order, page, size));
     }
 
 
