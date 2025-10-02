@@ -1,6 +1,7 @@
 package babbuddy.domain.oauth2.application.service.impl;
 
 import babbuddy.domain.oauth2.application.service.LoginLinkService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,17 @@ public class LoginLinkServiceImpl implements LoginLinkService {
     private String redirectUri;
 
     @Override
-    public String getLoginLink() {
+    public String getLoginLink(HttpServletRequest request) {
+        // React가 어디서 요청했는지 확인
+        String origin = request.getHeader("Origin");
+        String state = (origin != null && origin.contains("localhost")) ? "local" : "prod";
+
         return baseUrl +
-                "?client_id=" +
-                clientId +
-                "&redirect_uri=" +
-                redirectUri +
+                "?client_id=" + clientId +
+                "&redirect_uri=" + redirectUri +
                 "&response_type=code" +
-                "&scope=profile_nickname,profile_image,account_email";  // 필요한 Scope를 콤마로 구분
+                "&scope=profile_nickname,profile_image,account_email" +
+                "&state=" + state;
     }
 
 
