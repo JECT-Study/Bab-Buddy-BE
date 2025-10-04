@@ -5,6 +5,7 @@ import babbuddy.domain.dislikefood.domain.entity.DislikeFood;
 
 import babbuddy.domain.allergy.domain.entity.Allergy;
 import babbuddy.domain.recommend.domain.entity.RecommendFood;
+import babbuddy.domain.voteroom.domain.entity.VoteRoom;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecommendFood> recommendFoods = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoteRoom> voteRooms = new ArrayList<>();
     @Column(nullable = false)
     private String email;
 
@@ -75,7 +78,7 @@ public class User {
         this.profile = profile;
     }
 
-    public void updateCompleteOnboarding(){
+    public void updateCompleteOnboarding() {
         this.onboardingCompleted = true;
     }
 

@@ -12,10 +12,7 @@ import babbuddy.domain.recommend.domain.entity.RecommendRestaurant;
 import babbuddy.domain.recommend.domain.repository.RecommendFoodRepository;
 import babbuddy.domain.recommend.domain.repository.RecommendRestaurantRepository;
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendAllRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.*;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
@@ -71,12 +68,14 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
         // 알러지 + 싫어하는 음식 + 설문조사 3개
         String prompt = createTextPromptV2(req, allergy, dislike);
 
-        String[] resultParts = openAITextService.recommendFood(prompt).split(",", 2);
+        String[] resultParts = openAITextService.recommendFood(prompt).split(",");
         String foodName = resultParts[0].trim();  // 음식 이름
         //String city = resultParts.length > 1 ? resultParts[1].trim() : "Seoul"; // 주소 영어로 된 값 없으면 기본 서울
         String category = resultParts[1].trim(); // 음식 타입
+        String foodName1 = resultParts[2].trim();
+        String foodName2 = resultParts[3].trim();
 
-        String foodIntroduce = "오늘 너를 위해 추천한 메뉴는 바로 " + foodName + "이야! 🍽️ 나만 알고 있기 아까운 맛인데, 너도 한 번 받아볼래?";
+        String foodIntroduce = "오늘 너를 위해 추천한 메뉴는 바로 " + foodName + "! 🍽️ 나만 알고 있기 아까운 맛인데, 너도 한 번 받아볼래?";
 
         String foodImageUrl = getFoodImageUrlV2(foodName);
 
@@ -86,6 +85,8 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
                 .foodIntroduce(foodIntroduce)
                 .foodType(category)
                 .user(user)
+                .preparedFoodOne(foodName1)
+                .preparedFoodTwo(foodName2)
                 .build();
         RecommendFood saved = recommendFoodRepository.save(recommendFood);
 
@@ -144,6 +145,19 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
 
     }
 
+    @Override
+    public List<RecommendPreparedFoodRes> preparedFood(Long foodId) {
+        RecommendFood recommendFood = recommendFoodRepository.findById(foodId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
+
+        List<RecommendPreparedFoodRes> result = new ArrayList<>();
+
+        result.add(RecommendPreparedFoodRes.of(recommendFood.getPreparedFoodOne()));
+        result.add(RecommendPreparedFoodRes.of(recommendFood.getPreparedFoodTwo()));
+
+        return result;
+    }
+
     private String getFoodImageUrlV2(String foodName) {
 
         try {
@@ -172,11 +186,11 @@ public class RecommendFoodServiceImpl implements RecommendFoodService {
     private String createTextPromptV2(RecommendFoodReq req, String allergy, String dislike) {
         StringBuilder prompt = new StringBuilder();
 
-        prompt.append("다음 조건을 참고하여 사용자에게 추천할 수 있는 음식 이름 하나만 알려주세요.\n");
-        prompt.append("5개 후보를 생각해 본 뒤, 5개 중에서 랜덤으로 하나를 선택해 주세요.\n");
+        prompt.append("다음 조건을 참고하여 사용자에게 추천할 수 있는 음식 이름 3개만 알려주세요.\n");
+        prompt.append("5개 후보를 생각해 본 뒤, 5개 중에서 랜덤으로 3개를 선택해 주세요.\n");
         prompt.append("선택한 음식이 한식, 중식, 일식, 양식, 분식, 아시안 등 어떤 종류인지 분류해 주세요.\n");
         prompt.append("단, 음식 이름과 음식 종류(대분류)만 한 줄로 출력해 주세요.\n");
-        prompt.append("출력 형식은 '음식 이름,종류' 형식으로 간단하게 작성해 주세요. (예: 비빔밥,한식)\n\n");
+        prompt.append("출력 형식은 '음식 이름,종류,음식 이름, 음식 이름' 형식으로 간단하게 작성해 주세요. (예: 비빔밥,한식,된장찌개,김치찌개)\n\n");
 
         prompt.append("✅ 사용자 선호:\n");
         prompt.append("1. 지금 가장 떠오르는 맛: ").append(req.survey1()).append("\n");

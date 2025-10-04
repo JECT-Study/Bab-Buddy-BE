@@ -3,6 +3,7 @@ package babbuddy.domain.voteroom.application.service.lmpl;
 import babbuddy.domain.menu.application.service.MenuService;
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
 import babbuddy.domain.user.domain.entity.User;
+import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.domain.vote.domain.repository.VoteRepository;
 import babbuddy.domain.vote.presentation.dto.response.MenuInfoDto;
 import babbuddy.domain.vote.presentation.dto.response.RankedMenuGroupDto;
@@ -12,6 +13,7 @@ import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.domain.entity.VoteRoom;
 import babbuddy.domain.voteroom.domain.entity.VoteStatus;
 import babbuddy.domain.voteroom.domain.repository.VoteRoomRepository;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomUser;
@@ -34,12 +36,16 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     private final VoteRoomRepository voteRoomRepository;
     private final VoteRepository voteRepository;
     private final MenuService menuService;
+    private final UserRepository userRepository;
 
     @Override
-    public String createVoteRoom(String title) {
+    public String createVoteRoom(VoteRoomRequestDto dto, String userId) {
+
+        User user = userRepository.findById(userId).orElse(null);
         VoteRoom voteRoom = VoteRoom.builder()
-                .title(title)
+                .title(dto.getTitle())
                 .votestatus(VoteStatus.ONGOING)
+                .user(user)
                 .build();
         VoteRoom saved = voteRoomRepository.save(voteRoom);
         log.info("투표방 생성 완료: roomId={}, title={}", saved.getId(), saved.getTitle());
@@ -87,8 +93,9 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 })
                 .toList();
     }
+
     @Override
-    public VoteRoomDetailResponseDto getVoteRoomDetail(String roomId) {
+    public VoteRoomDetailResponseDto getVoteRoomDetail(String roomId, String userId) {
         VoteRoom room = voteRoomRepository.findById(roomId)
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
 
@@ -104,6 +111,11 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         // 3. 투표한 인원 수
         int votedCount = voteRepository.countDistinctUsersByRoomId(roomId);
 
+        // 4. 사용자들이 싫어하는거
+
+
+
+
         return new VoteRoomDetailResponseDto(
                 room.getId(),
                 room.getTitle(),
@@ -111,9 +123,11 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 menuList,
                 participantDtos,
                 participants.size(),
-                votedCount
-        );
+                votedCount,
+                room.getUser().getId().equals(userId)
+                );
     }
+
     @Override
     public VoteRoomResultResponseDto getVoteRoomFinalResult(String voteRoomId) {
         VoteRoom room = voteRoomRepository.findById(voteRoomId)
@@ -127,6 +141,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
 
         return new VoteRoomResultResponseDto(room.getId(), room.getTitle(), result);
     }
+
     @Override
     public VoteResultDto calculateRankedResult(String voteRoomId) {
         List<Object[]> results = voteRepository.countVotesGroupByMenu(voteRoomId);

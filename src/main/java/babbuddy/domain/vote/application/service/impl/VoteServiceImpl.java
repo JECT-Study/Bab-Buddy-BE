@@ -7,6 +7,7 @@ import babbuddy.domain.user.domain.repository.UserRepository;
 import babbuddy.domain.vote.application.service.VoteService;
 import babbuddy.domain.vote.domain.entity.Vote;
 import babbuddy.domain.vote.domain.repository.VoteRepository;
+import babbuddy.domain.vote.presentation.dto.response.CastVoteRes;
 import babbuddy.domain.voteroom.domain.entity.VoteRoom;
 import babbuddy.domain.voteroom.domain.repository.VoteRoomRepository;
 import babbuddy.global.infra.exception.error.BabbuddyException;
@@ -29,12 +30,13 @@ public class VoteServiceImpl implements VoteService {
 
     /**
      * 투표등록
+     *
      * @param userId
      * @param voteRoomId
      * @param menuId
      */
     @Override
-    public String castVote(String userId, String voteRoomId, String menuId) {
+    public CastVoteRes castVote(String userId, String voteRoomId, String menuId) {
         if (voteRepository.existsByUserIdAndVoteRoomId(userId, voteRoomId)) {
             log.error("이미 투표한 유저: userId={}, voteRoomId={}", userId, voteRoomId);
             throw new BabbuddyException(ErrorCode.ALREADY_VOTED);
@@ -66,11 +68,12 @@ public class VoteServiceImpl implements VoteService {
 
         voteRepository.save(vote);
 
-        return vote.getId();
+        return CastVoteRes.of(vote.getId());
     }
 
     /**
      * 투표취소
+     *
      * @param userId
      * @param voteId
      */
