@@ -2,6 +2,8 @@ package babbuddy.domain.vote.presentation.controller;
 
 
 import babbuddy.domain.vote.application.service.VoteService;
+import babbuddy.domain.vote.presentation.dto.req.CastVoteReq;
+import babbuddy.domain.vote.presentation.dto.response.CastVoteRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,8 +20,7 @@ public class VoteController {
 
     /**
      * 투표 등록
-     * @param voteRoomId
-     * @param menuId
+     * @param req  투표 등록 요청 본문 (voteRoomId, menuId 포함)
      * @param user
      * @return
      */
@@ -30,11 +31,9 @@ public class VoteController {
             @ApiResponse(responseCode = "404", description = "유저 없음")
     })
     @PostMapping("/register")
-    public ResponseEntity<String> castVote(@RequestParam String voteRoomId,
-                                           @RequestParam String menuId,
-                                           @AuthenticationPrincipal String user) {
-        String voteId = voteService.castVote(user, voteRoomId, menuId);
-        return ResponseEntity.ok(voteId);
+    public ResponseEntity<CastVoteRes> castVote(@RequestBody CastVoteReq req,
+                                                @AuthenticationPrincipal String user) {
+        return ResponseEntity.ok(voteService.castVote(user, req.voteRoomId(), req.menuId()));
     }
 
     /**
@@ -50,7 +49,7 @@ public class VoteController {
             @ApiResponse(responseCode = "404", description = "유저 없음")
     })
     @DeleteMapping("/cancel")
-    public ResponseEntity<String> cancelVote(@RequestParam String voteId,
+    public ResponseEntity<Void> cancelVote(@RequestParam String voteId,
                                            @AuthenticationPrincipal String user) {
         voteService.cancelVote(user, voteId);
         return ResponseEntity.ok().build();

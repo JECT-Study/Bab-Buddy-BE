@@ -1,6 +1,7 @@
 package babbuddy.domain.voteroom.domain.entity;
 
 import babbuddy.domain.menu.domain.entity.Menu;
+import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.vote.domain.entity.Vote;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,11 @@ public class VoteRoom {
     @Column(name = "room_id")
     private String Id;
 
+
+    @ManyToOne(fetch = FetchType.LAZY) // 다대일: 여러 VoteRoom이 한 User를 참조
+    @JoinColumn(name = "user_id")      // FK 컬럼 이름
+    private User user;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -43,9 +49,10 @@ public class VoteRoom {
     private List<Menu> menus = new ArrayList<>();
 
     @Builder
-    public VoteRoom(String title, VoteStatus votestatus) {
+    public VoteRoom(String title, VoteStatus votestatus, User user) {
         this.title = title;
         this.votestatus = votestatus;
+        this.user =user;
     }
 
     public void changeStatus(VoteStatus newStatus) {

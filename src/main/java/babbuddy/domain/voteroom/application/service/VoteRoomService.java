@@ -2,6 +2,8 @@ package babbuddy.domain.voteroom.application.service;
 
 import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
+import babbuddy.domain.voteroom.domain.entity.VoteStatus;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 
@@ -11,10 +13,10 @@ public interface VoteRoomService {
     /**
      * 투표방을 생성합니다.
      *
-     * @param title 투표방 생성 요청 데이터 (제목 등)
+     * @param
      * @return 생성된 투표방의 ID
      */
-    String createVoteRoom(String title);
+    String createVoteRoom(VoteRoomRequestDto dto, String userId);
 
     /**
      * 투표방을 종료합니다.
@@ -46,7 +48,7 @@ public interface VoteRoomService {
      * @param roomId 조회할 투표방 ID
      * @return 투표방 상세 DTO
      */
-    VoteRoomDetailResponseDto getVoteRoomDetail(String roomId);
+    VoteRoomDetailResponseDto getVoteRoomDetail(String roomId, String userId);
 
     /**
      * 투표가 종료된 투표방의 결과를 조회합니다.

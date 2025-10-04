@@ -19,4 +19,5 @@ public class VoteRoomDetailResponseDto {
     private List<VoteRoomUser> participantList;
     private int totalParticipants;
     private int votedParticipants;
+    private boolean isHostUser;
 }

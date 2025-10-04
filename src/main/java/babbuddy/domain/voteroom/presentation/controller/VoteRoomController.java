@@ -11,19 +11,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping ("/api/voterooms")
+@RequestMapping("/api/voterooms")
 @Tag(name = "Voterooms", description = "투표방 관련 API")
 public class VoteRoomController {
     private final VoteRoomService voteRoomService;
 
     /**
      * 투표방 생성
+     *
      * @return
      */
     @Operation(summary = "투표방 생성", description = "투표 방을 생성하는 API.")
@@ -33,12 +35,15 @@ public class VoteRoomController {
             @ApiResponse(responseCode = "404", description = "유저 없음")
     })
     @PostMapping("/createroom")
-    public ResponseEntity<String> createRoom(@RequestBody VoteRoomRequestDto title) {
-        String roomId = voteRoomService.createVoteRoom(title.getTitle());
+    public ResponseEntity<String> createRoom(@RequestBody VoteRoomRequestDto dto,
+                                             @AuthenticationPrincipal String userId) {
+        String roomId = voteRoomService.createVoteRoom(dto, userId);
         return ResponseEntity.ok(roomId);
     }
+
     /**
      * 투표방 종료
+     *
      * @param roomId
      * @return
      */
@@ -56,6 +61,7 @@ public class VoteRoomController {
 
     /**
      * 투표방 삭제
+     *
      * @param roomId
      * @return
      */
@@ -72,8 +78,10 @@ public class VoteRoomController {
     }
 
     // TODO : 페이징 개선
+
     /**
      * 투표방 리스트 조회
+     *
      * @return
      */
     @Operation(summary = "투표방 리스트", description = "투표방 리스트를 조회 API")
@@ -87,6 +95,7 @@ public class VoteRoomController {
         List<VoteRoomListResponseDto> rooms = voteRoomService.getVoteRoomList();
         return ResponseEntity.ok(rooms);
     }
+
     /**
      * 투표방 상세조회
      */
@@ -98,14 +107,16 @@ public class VoteRoomController {
     })
     @GetMapping("/{roomId}")
     public ResponseEntity<VoteRoomDetailResponseDto> getVoteRoomDetail(
-            @PathVariable String roomId
+            @PathVariable String roomId,
+            @AuthenticationPrincipal String userId
     ) {
-        VoteRoomDetailResponseDto detail = voteRoomService.getVoteRoomDetail(roomId);
+        VoteRoomDetailResponseDto detail = voteRoomService.getVoteRoomDetail(roomId, userId);
         return ResponseEntity.ok(detail);
     }
 
     /**
      * 투표방 결과 조회
+     *
      * @param roomId
      * @return
      */
