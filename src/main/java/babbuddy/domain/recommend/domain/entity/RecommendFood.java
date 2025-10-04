@@ -38,6 +38,10 @@ public class RecommendFood {
     @Column(nullable = false)
     private String foodIntroduce;
 
+    @Column(nullable = false)
+    private String preparedFoodOne;
+    @Column(nullable = false)
+    private String preparedFoodTwo;
 
     @Column(nullable = false)
     private String foodType; // 음식점이랑 동일
@@ -47,11 +51,14 @@ public class RecommendFood {
     private LocalDateTime createdAt;
 
     @Builder
-    public RecommendFood(User user, String foodName, String foodImage, String foodIntroduce, String foodType) {
+    public RecommendFood(User user, String foodName, String foodImage, String foodIntroduce, String foodType,
+                         String preparedFoodOne, String preparedFoodTwo) {
         this.user = user;
         this.foodName = foodName;
         this.foodImage = foodImage;
         this.foodIntroduce = foodIntroduce;
-        this.foodType =foodType;
+        this.foodType = foodType;
+        this.preparedFoodOne = preparedFoodOne;
+        this.preparedFoodTwo = preparedFoodTwo;
     }
 }

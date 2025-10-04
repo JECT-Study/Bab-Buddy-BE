@@ -1,10 +1,7 @@
 package babbuddy.domain.recommend.application.service;
 
 import babbuddy.domain.recommend.presentation.dto.req.RecommendFoodReq;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendAllRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RecommendFoodRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantJsonRes;
-import babbuddy.domain.recommend.presentation.dto.res.recommend.RestaurantSelectRes;
+import babbuddy.domain.recommend.presentation.dto.res.recommend.*;
 
 import java.util.List;
 
@@ -17,4 +14,6 @@ public interface RecommendFoodService {
     List<RestaurantSelectRes> restaurantAll(Long foodId);
 
     RecommendAllRes recommendALL(Long foodId);
+
+    List<RecommendPreparedFoodRes> preparedFood(Long foodId);
 }
