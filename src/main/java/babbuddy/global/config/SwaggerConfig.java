@@ -17,10 +17,13 @@ import org.springframework.context.annotation.Configuration;
                 description = "API 명세서",
                 version = "v1",
                 contact = @Contact(
-                        name = "최 & 배",
+                        name = "최승호",
                         email = "chltmdgh517@naver.com"
                 )
-        )
+        ),
+        servers = {
+                @Server(url = "https://ject.babbuddy.p-e.kr", description = "Production Server")
+        }
 )
 @Configuration
 public class SwaggerConfig {

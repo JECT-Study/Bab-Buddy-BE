@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class VoteRoomUser {
     private String id;
     private String name;
+    private String image;
 }
