@@ -33,6 +33,9 @@ public class VoteRoom {
     @JoinColumn(name = "user_id")      // FK 컬럼 이름
     private User user;
 
+    @OneToMany(mappedBy = "voteRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoteRoomDislikeFood> voteRoomDislikeFoods = new ArrayList<>();
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -52,7 +55,7 @@ public class VoteRoom {
     public VoteRoom(String title, VoteStatus votestatus, User user) {
         this.title = title;
         this.votestatus = votestatus;
-        this.user =user;
+        this.user = user;
     }
 
     public void changeStatus(VoteStatus newStatus) {

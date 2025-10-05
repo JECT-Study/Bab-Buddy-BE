@@ -2,8 +2,10 @@ package babbuddy.domain.voteroom.presentation.controller;
 
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDislikeResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -129,6 +131,45 @@ public class VoteRoomController {
     @GetMapping("/result/{roomId}")
     public ResponseEntity<VoteRoomResultResponseDto> getResult(@PathVariable String roomId) {
         return ResponseEntity.ok(voteRoomService.getVoteRoomFinalResult(roomId));
+    }
+
+
+    // 1. 싫어하는 음식 추가
+    @Operation(summary = "투표방 싫어하는 음식 추가", description = "투표방에 싫어하는 음식을 추가하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "싫어하는 음식 추가 성공"),
+            @ApiResponse(responseCode = "400", description = "요청 값이 잘못됨"),
+            @ApiResponse(responseCode = "404", description = "투표방 없음")
+    })
+    @PostMapping("/dislike")
+    public ResponseEntity<Void> postDislikeFood(@RequestBody VoteRoomDislikeRequestDto req) {
+        voteRoomService.postDislikeFood(req);
+        return ResponseEntity.ok().build();
+    }
+
+
+    // 2. 싫어하는 음식 조회
+    @Operation(summary = "투표방 싫어하는 음식 조회", description = "특정 투표방의 싫어하는 음식 목록을 조회하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "투표방 없음")
+    })
+    @GetMapping("/dislike/{roomId}")
+    public ResponseEntity<List<VoteRoomDislikeResponseDto>> getDislikeFoods(@PathVariable String roomId) {
+        List<VoteRoomDislikeResponseDto> response = voteRoomService.getDislikedFoods(roomId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 3. 싫어하는 음식 삭제
+    @Operation(summary = "투표방 싫어하는 음식 삭제", description = "특정 투표방에서 싫어하는 음식을 삭제하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "음식 또는 방 없음")
+    })
+    @DeleteMapping("/dislike")
+    public ResponseEntity<Void> deleteDislikeFood(@RequestBody VoteRoomDislikeRequestDto req) {
+        voteRoomService.deleteDislikedFood(req);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -11,10 +11,14 @@ import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.domain.entity.VoteRoom;
+import babbuddy.domain.voteroom.domain.entity.VoteRoomDislikeFood;
 import babbuddy.domain.voteroom.domain.entity.VoteStatus;
+import babbuddy.domain.voteroom.domain.repository.VoteRoomDislikeFoodRepository;
 import babbuddy.domain.voteroom.domain.repository.VoteRoomRepository;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDislikeResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomUser;
 import babbuddy.global.infra.exception.error.BabbuddyException;
@@ -37,6 +41,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     private final VoteRepository voteRepository;
     private final MenuService menuService;
     private final UserRepository userRepository;
+    private final VoteRoomDislikeFoodRepository voteRoomDislikeFoodRepository;
 
     @Override
     public String createVoteRoom(VoteRoomRequestDto dto, String userId) {
@@ -105,15 +110,13 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         // 2. 참여자 리스트 조회
         List<User> participants = voteRepository.findParticipantsByRoomId(roomId);
         List<VoteRoomUser> participantDtos = participants.stream()
-                .map(user -> new VoteRoomUser(user.getId(), user.getName()))
+                .map(user -> new VoteRoomUser(user.getId(), user.getName(), user.getProfile()))
                 .toList();
 
         // 3. 투표한 인원 수
         int votedCount = voteRepository.countDistinctUsersByRoomId(roomId);
 
         // 4. 사용자들이 싫어하는거
-
-
 
 
         return new VoteRoomDetailResponseDto(
@@ -125,7 +128,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 participants.size(),
                 votedCount,
                 room.getUser().getId().equals(userId)
-                );
+        );
     }
 
     @Override
@@ -180,6 +183,40 @@ public class VoteRoomServiceImpl implements VoteRoomService {
 
         return new VoteResultDto(rankedTop3);
     }
+
+    @Override
+    public void postDislikeFood(VoteRoomDislikeRequestDto req) {
+        VoteRoom room = voteRoomRepository.findById(req.getRoomId())
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        VoteRoomDislikeFood voteRoomDislikeFood = VoteRoomDislikeFood.builder().foodName(req.getName()).voteRoom(room).build();
+        voteRoomDislikeFoodRepository.save(voteRoomDislikeFood);
+    }
+
+    @Override
+    public List<VoteRoomDislikeResponseDto> getDislikedFoods(String roomId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        List<VoteRoomDislikeFood> dislikedFoods = voteRoomDislikeFoodRepository.findByVoteRoom(room);
+
+        return dislikedFoods.stream()
+                .map(food -> new VoteRoomDislikeResponseDto(food.getId(), food.getFoodName()))
+                .toList();
+    }
+
+    @Override
+     public void deleteDislikedFood(VoteRoomDislikeRequestDto req) {
+        VoteRoom room = voteRoomRepository.findById(req.getRoomId())
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        VoteRoomDislikeFood dislikeFood = voteRoomDislikeFoodRepository
+                .findByVoteRoomAndFoodName(room, req.getName())
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.FOOD_NOT_EXIST));
+
+        voteRoomDislikeFoodRepository.delete(dislikeFood);
+    }
+
 
 
 }
