@@ -50,6 +50,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         VoteRoom voteRoom = VoteRoom.builder()
                 .title(dto.getTitle())
                 .votestatus(VoteStatus.ONGOING)
+                .menuSelectMethod(dto.getMenuSelectMethod())
                 .user(user)
                 .build();
         VoteRoom saved = voteRoomRepository.save(voteRoom);
