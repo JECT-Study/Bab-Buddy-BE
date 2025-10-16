@@ -50,10 +50,11 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         VoteRoom voteRoom = VoteRoom.builder()
                 .title(dto.getTitle())
                 .votestatus(VoteStatus.ONGOING)
+                .menuSelectMethod(dto.getMenuSelectMethod())
                 .user(user)
                 .build();
         VoteRoom saved = voteRoomRepository.save(voteRoom);
-        log.info("투표방 생성 완료: roomId={}, title={}", saved.getId(), saved.getTitle());
+        log.info("투표방 생성 완료: roomId={}, title={}, method={}", saved.getId(), saved.getTitle(), saved.getMenuSelectMethod());
         return saved.getId();
     }
 

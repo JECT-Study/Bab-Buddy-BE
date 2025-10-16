@@ -21,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
+@Builder
 @Table(name = "voteroom")
 public class VoteRoom {
     @Id
@@ -42,6 +43,10 @@ public class VoteRoom {
     @Enumerated(EnumType.STRING)
     private VoteStatus votestatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "menu_select_method", nullable = false)
+    private MenuSelectMethod menuSelectMethod;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -50,13 +55,6 @@ public class VoteRoom {
 
     @OneToMany(mappedBy = "voteRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Menu> menus = new ArrayList<>();
-
-    @Builder
-    public VoteRoom(String title, VoteStatus votestatus, User user) {
-        this.title = title;
-        this.votestatus = votestatus;
-        this.user = user;
-    }
 
     public void changeStatus(VoteStatus newStatus) {
         this.votestatus = newStatus;
