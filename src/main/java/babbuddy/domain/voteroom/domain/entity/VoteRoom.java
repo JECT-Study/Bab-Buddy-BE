@@ -44,6 +44,7 @@ public class VoteRoom {
     private VoteStatus votestatus;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "menu_select_method", nullable = false)
     private MenuSelectMethod menuSelectMethod;
 
     @CreationTimestamp
