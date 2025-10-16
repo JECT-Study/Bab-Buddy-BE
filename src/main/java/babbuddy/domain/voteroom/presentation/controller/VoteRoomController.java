@@ -1,11 +1,11 @@
 package babbuddy.domain.voteroom.presentation.controller;
 
+import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
-import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDislikeResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -142,8 +142,9 @@ public class VoteRoomController {
             @ApiResponse(responseCode = "404", description = "투표방 없음")
     })
     @PostMapping("/dislike")
-    public ResponseEntity<Void> postDislikeFood(@RequestBody VoteRoomDislikeRequestDto req) {
-        voteRoomService.postDislikeFood(req);
+    public ResponseEntity<Void> postDislikeFood(@RequestBody VoteRoomDislikeRequestDto req,
+                                                @AuthenticationPrincipal String userId) {
+        voteRoomService.postDislikeFood(req, userId);
         return ResponseEntity.ok().build();
     }
 
@@ -155,8 +156,8 @@ public class VoteRoomController {
             @ApiResponse(responseCode = "404", description = "투표방 없음")
     })
     @GetMapping("/dislike/{roomId}")
-    public ResponseEntity<List<VoteRoomDislikeResponseDto>> getDislikeFoods(@PathVariable String roomId) {
-        List<VoteRoomDislikeResponseDto> response = voteRoomService.getDislikedFoods(roomId);
+    public ResponseEntity<List<MenuResponseDto>> getDislikeFoods(@PathVariable String roomId) {
+        List<MenuResponseDto> response = voteRoomService.getDislikedFoods(roomId);
         return ResponseEntity.ok(response);
     }
 

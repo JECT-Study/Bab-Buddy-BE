@@ -18,7 +18,6 @@ import babbuddy.domain.voteroom.domain.repository.VoteRoomRepository;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
-import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDislikeResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomUser;
 import babbuddy.global.infra.exception.error.BabbuddyException;
@@ -54,7 +53,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 .user(user)
                 .build();
         VoteRoom saved = voteRoomRepository.save(voteRoom);
-        log.info("투표방 생성 완료: roomId={}, title={}, method={}", saved.getId(), saved.getTitle(), saved.getMenuSelectMethod());
+        log.info("투표방 생성 완료: roomId={}, title={}", saved.getId(), saved.getTitle());
         return saved.getId();
     }
 
@@ -186,23 +185,35 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     }
 
     @Override
-    public void postDislikeFood(VoteRoomDislikeRequestDto req) {
+    public void postDislikeFood(VoteRoomDislikeRequestDto req, String userId) {
         VoteRoom room = voteRoomRepository.findById(req.getRoomId())
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
 
-        VoteRoomDislikeFood voteRoomDislikeFood = VoteRoomDislikeFood.builder().foodName(req.getName()).voteRoom(room).build();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
+
+        VoteRoomDislikeFood voteRoomDislikeFood = VoteRoomDislikeFood.builder()
+                .foodName(req.getName())
+                .voteRoom(room)
+                .createdBy(user)
+                .build();
+
         voteRoomDislikeFoodRepository.save(voteRoomDislikeFood);
     }
 
     @Override
-    public List<VoteRoomDislikeResponseDto> getDislikedFoods(String roomId) {
+    public List<MenuResponseDto> getDislikedFoods(String roomId) {
         VoteRoom room = voteRoomRepository.findById(roomId)
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
-
+        
         List<VoteRoomDislikeFood> dislikedFoods = voteRoomDislikeFoodRepository.findByVoteRoom(room);
-
+        
         return dislikedFoods.stream()
-                .map(food -> new VoteRoomDislikeResponseDto(food.getId(), food.getFoodName()))
+                .map(food -> new MenuResponseDto(
+                        String.valueOf(food.getId()), 
+                        food.getFoodName(),
+                        food.getCreatedBy().getId()
+                ))
                 .toList();
     }
 

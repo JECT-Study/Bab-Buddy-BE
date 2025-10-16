@@ -2,7 +2,6 @@ package babbuddy.domain.voteroom.domain.entity;
 
 import babbuddy.domain.menu.domain.entity.Menu;
 import babbuddy.domain.user.domain.entity.User;
-import babbuddy.domain.vote.domain.entity.Vote;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,16 +17,16 @@ import java.util.List;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-@Builder
 @Table(name = "voteroom")
 public class VoteRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "room_id")
-    private String Id;
+    private String id;
 
 
     @ManyToOne(fetch = FetchType.LAZY) // 다대일: 여러 VoteRoom이 한 User를 참조
