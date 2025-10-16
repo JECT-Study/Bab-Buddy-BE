@@ -212,7 +212,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 .map(food -> new MenuResponseDto(
                         String.valueOf(food.getId()), 
                         food.getFoodName(),
-                        food.getCreatedBy().getName()
+                        food.getCreatedBy().getId()
                 ))
                 .toList();
     }
