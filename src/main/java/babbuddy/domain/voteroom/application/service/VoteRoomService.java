@@ -1,12 +1,11 @@
 package babbuddy.domain.voteroom.application.service;
 
+import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
-import babbuddy.domain.voteroom.domain.entity.VoteStatus;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
-import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDislikeResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 
 import java.util.List;
@@ -71,7 +70,7 @@ public interface VoteRoomService {
     VoteResultDto calculateRankedResult(String voteRoomId);
 
 
-    void postDislikeFood(VoteRoomDislikeRequestDto req);
-    List<VoteRoomDislikeResponseDto> getDislikedFoods(String roomId); // 조회
+    void postDislikeFood(VoteRoomDislikeRequestDto req, String userId);
+    List<MenuResponseDto> getDislikedFoods(String roomId); // 조회
     void deleteDislikedFood(VoteRoomDislikeRequestDto req);   // 삭제
 }
