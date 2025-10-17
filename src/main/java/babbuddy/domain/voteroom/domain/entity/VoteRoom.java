@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Entity
@@ -54,7 +55,13 @@ public class VoteRoom {
 
     @OneToMany(mappedBy = "voteRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Menu> menus = new ArrayList<>();
-
+    
+    // 룰렛으로 선택된 메뉴 (단일 메뉴)
+    @Nullable
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "selected_menu_id")
+    private Menu selectedMenu;
+    
     // 투표방 참여자 목록 (호스트 포함)
     @ManyToMany
     @JoinTable(
@@ -83,5 +90,15 @@ public class VoteRoom {
     // 전체 참여자 수 조회 (호스트 포함)
     public int getTotalParticipantCount() {
         return participants.size();
+    }
+
+    // 룰렛으로 선택된 메뉴 설정
+    public void setSelectedMenu(@Nullable Menu menu) {
+        this.selectedMenu = menu;
+    }
+    
+    // 룰렛으로 선택된 메뉴가 있는지 확인
+    public boolean hasSelectedMenu() {
+        return selectedMenu != null;
     }
 }
