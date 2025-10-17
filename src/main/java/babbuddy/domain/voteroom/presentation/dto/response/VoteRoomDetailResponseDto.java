@@ -22,4 +22,5 @@ public class VoteRoomDetailResponseDto {
     private int votedParticipants;
     private boolean isHostUser;
     private MenuSelectMethod menuSelectMethod;
+    private String votedMenuName;
 }

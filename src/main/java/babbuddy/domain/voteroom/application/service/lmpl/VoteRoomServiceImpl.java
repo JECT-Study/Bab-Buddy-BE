@@ -122,7 +122,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         // 3. 투표한 인원 수
         int votedCount = voteRepository.countDistinctUsersByRoomId(roomId);
 
-        // 4. 사용자들이 싫어하는거
+        // 4. 본인이 투표한 메뉴 이름
+        String votedMenuName = voteRepository.findVotedMenuNameByUserIdAndRoomId(userId, roomId);
 
 
         return new VoteRoomDetailResponseDto(
@@ -134,7 +135,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 room.getTotalParticipantCount(),
                 votedCount,
                 room.getUser().getId().equals(userId),
-                room.getMenuSelectMethod()
+                room.getMenuSelectMethod(),
+                votedMenuName
         );
     }
 
