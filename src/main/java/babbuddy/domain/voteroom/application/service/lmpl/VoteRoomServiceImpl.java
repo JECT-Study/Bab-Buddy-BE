@@ -91,14 +91,13 @@ public class VoteRoomServiceImpl implements VoteRoomService {
 
         return rooms.stream()
                 .map(room -> {
-                    int participantCount = voteRepository.countDistinctUsersByRoomId(room.getId());
                     Boolean isHostUser = room.getUser().getId().equals(userId);
 
                     return new VoteRoomListResponseDto(
                             room.getId(),
                             room.getTitle(),
                             room.getVotestatus(),
-                            participantCount,
+                            room.getTotalParticipantCount(),
                             isHostUser
 
                     );
