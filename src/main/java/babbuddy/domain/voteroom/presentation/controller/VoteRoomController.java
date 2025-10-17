@@ -173,4 +173,27 @@ public class VoteRoomController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "투표방 참여", description = "투표방에 참여하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투표방 참여 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 참여했을 경우"),
+            @ApiResponse(responseCode = "404", description = "유저 없음")
+    })
+    @PostMapping("/join/{roomId}")
+    public void joinVoteRoom(@PathVariable String roomId,
+                             @AuthenticationPrincipal String userId) {
+        voteRoomService.joinVoteRoom(roomId, userId);
+    }
+
+    @Operation(summary = "투표방 나가기", description = "투표방에서 나가는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투표방 나가기 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 나갔을 경우"),
+            @ApiResponse(responseCode = "404", description = "유저 없음")
+    })
+    @PostMapping("/leave/{roomId}")
+    public void leaveVoteRoom(@PathVariable String roomId,
+                              @AuthenticationPrincipal String userId) {
+        voteRoomService.leaveVoteRoom(roomId, userId);
+    }
 }

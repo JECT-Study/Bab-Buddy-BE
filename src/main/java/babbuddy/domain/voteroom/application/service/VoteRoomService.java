@@ -73,4 +73,8 @@ public interface VoteRoomService {
     void postDislikeFood(VoteRoomDislikeRequestDto req, String userId);
     List<MenuResponseDto> getDislikedFoods(String roomId); // 조회
     void deleteDislikedFood(VoteRoomDislikeRequestDto req);   // 삭제
+
+    void joinVoteRoom(String roomId, String userId);
+
+    void leaveVoteRoom(String roomId, String userId);
 }
