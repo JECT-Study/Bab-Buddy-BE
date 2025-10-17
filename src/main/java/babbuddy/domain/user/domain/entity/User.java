@@ -31,20 +31,23 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Allergy> allergies = new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecommendFood> recommendFoods = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteRoom> voteRooms = new ArrayList<>();
+    
+    // 참여하고 있는 투표방 목록
+    @ManyToMany(mappedBy = "participants")
+    private List<VoteRoom> participatingVoteRooms = new ArrayList<>();
+
     @Column(nullable = false)
     private String email;
 
     // 이름
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = true)
     private String profile;
+
     // 온보딩 완료 여부 필드 추가
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean onboardingCompleted = false;
