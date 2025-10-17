@@ -24,4 +24,7 @@ public interface VoteRepository extends JpaRepository<Vote, String> {
 
     @Query("SELECT v.menu.name, COUNT(v) FROM Vote v WHERE v.voteRoom.Id = :roomId GROUP BY v.menu.name")
     List<Object[]> countVotesGroupByMenu(@Param("roomId") String roomId);
+
+    @Query("SELECT v.menu.name FROM Vote v WHERE v.user.id = :userId AND v.voteRoom.Id = :roomId")
+    String findVotedMenuNameByUserIdAndRoomId(String userId, String roomId);
 }
