@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class VoteRoomRouletteDetailResponseDto {
     private String roomId;
     private String title;
+    private String voteStatus;
     private List<MenuResponseDto> menuList;
     private List<VoteRoomUser> participantList;
     private int totalParticipants;

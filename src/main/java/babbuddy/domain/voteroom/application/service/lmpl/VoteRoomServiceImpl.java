@@ -205,6 +205,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         return new VoteRoomRouletteDetailResponseDto(
                 room.getId(),
                 room.getTitle(),
+                String.valueOf(room.getVotestatus()).toUpperCase(),
                 menuList,
                 participantDtos,
                 room.getTotalParticipantCount(),
