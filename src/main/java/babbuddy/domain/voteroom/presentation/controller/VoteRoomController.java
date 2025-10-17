@@ -1,13 +1,15 @@
 package babbuddy.domain.voteroom.presentation.controller;
 
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
-import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRouletteRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteDetailResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteResultResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -209,4 +211,30 @@ public class VoteRoomController {
                                      @AuthenticationPrincipal String userId) {
         voteRoomService.registerRouletteMenu(roomId, req, userId);
     }
+
+    @Operation(summary = "룰렛 투표방 상세 조회", description = "룰렛 투표방 상세 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "룰렛 투표방 상세 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 조회했을 경우"),
+            @ApiResponse(responseCode = "404", description = "유저 없음")
+    })
+    @GetMapping("/roulette/{roomId}")
+    public VoteRoomRouletteDetailResponseDto getVoteRoomRouletteDetail(
+            @PathVariable String roomId,
+            @AuthenticationPrincipal String userId) {
+
+        return voteRoomService.getVoteRoomRouletteDetail(roomId, userId);
+    }
+
+    @Operation(summary = "룰렛 투표방 결과 조회", description = "룰렛 투표방 결과 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "룰렛 투표방 결과 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 조회했을 경우"),
+            @ApiResponse(responseCode = "404", description = "유저 없음")
+    })
+    @GetMapping("/roulette/result/{roomId}")
+    public VoteRoomRouletteResultResponseDto getVoteRoomRouletteResult(@PathVariable String roomId) {
+        return voteRoomService.getVoteRoomRouletteFinalResult(roomId);
+    }
+
 }

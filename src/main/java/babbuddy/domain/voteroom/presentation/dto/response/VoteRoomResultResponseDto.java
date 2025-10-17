@@ -1,5 +1,6 @@
-package babbuddy.domain.vote.presentation.dto.response;
+package babbuddy.domain.voteroom.presentation.dto.response;
 
+import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.voteroom.domain.entity.MenuSelectMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
