@@ -1,6 +1,8 @@
 package babbuddy.domain.voteroom.application.service.lmpl;
 
 import babbuddy.domain.menu.application.service.MenuService;
+import babbuddy.domain.menu.domain.entity.Menu;
+import babbuddy.domain.menu.domain.repository.MenuRepository;
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
 import babbuddy.domain.user.domain.entity.User;
 import babbuddy.domain.user.domain.repository.UserRepository;
@@ -8,7 +10,8 @@ import babbuddy.domain.vote.domain.repository.VoteRepository;
 import babbuddy.domain.vote.presentation.dto.response.MenuInfoDto;
 import babbuddy.domain.vote.presentation.dto.response.RankedMenuGroupDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
-import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
+import babbuddy.domain.voteroom.domain.entity.MenuSelectMethod;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.domain.entity.VoteRoom;
 import babbuddy.domain.voteroom.domain.entity.VoteRoomDislikeFood;
@@ -17,8 +20,11 @@ import babbuddy.domain.voteroom.domain.repository.VoteRoomDislikeFoodRepository;
 import babbuddy.domain.voteroom.domain.repository.VoteRoomRepository;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRouletteRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteDetailResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteResultResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomUser;
 import babbuddy.global.infra.exception.error.BabbuddyException;
 import babbuddy.global.infra.exception.error.ErrorCode;
@@ -41,6 +47,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     private final MenuService menuService;
     private final UserRepository userRepository;
     private final VoteRoomDislikeFoodRepository voteRoomDislikeFoodRepository;
+    private final MenuRepository menuRepository;
 
     @Override
     public String createVoteRoom(VoteRoomRequestDto dto, String userId) {
@@ -122,7 +129,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         // 3. 투표한 인원 수
         int votedCount = voteRepository.countDistinctUsersByRoomId(roomId);
 
-        // 4. 사용자들이 싫어하는거
+        // 4. 본인이 투표한 메뉴 이름
+        String votedMenuName = voteRepository.findVotedMenuNameByUserIdAndRoomId(userId, roomId);
 
 
         return new VoteRoomDetailResponseDto(
@@ -134,7 +142,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 room.getTotalParticipantCount(),
                 votedCount,
                 room.getUser().getId().equals(userId),
-                room.getMenuSelectMethod()
+                room.getMenuSelectMethod(),
+                votedMenuName
         );
     }
 
@@ -150,6 +159,58 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         VoteResultDto result = calculateRankedResult(voteRoomId); // 방금 정리한 랭킹 계산 로직
 
         return new VoteRoomResultResponseDto(room.getId(), room.getTitle(), result, room.getMenuSelectMethod());
+    }
+
+    @Override
+    public VoteRoomRouletteResultResponseDto getVoteRoomRouletteFinalResult(String voteRoomId) {
+        VoteRoom room = voteRoomRepository.findById(voteRoomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        if (room.getMenuSelectMethod() != MenuSelectMethod.ROULETTE) {
+            throw new BabbuddyException(ErrorCode.MENU_SELECT_METHOD_MISMATCH);
+        }
+
+        String selectedMenuName = room.getSelectedMenu() != null ? room.getSelectedMenu().getName() : null;
+
+        return new VoteRoomRouletteResultResponseDto(
+                room.getId(),
+                room.getTitle(),
+                selectedMenuName,
+                room.getMenuSelectMethod()
+        );
+    }
+
+    @Override
+    public VoteRoomRouletteDetailResponseDto getVoteRoomRouletteDetail(String roomId, String userId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        if (room.getMenuSelectMethod() != MenuSelectMethod.ROULETTE) {
+            throw new BabbuddyException(ErrorCode.MENU_SELECT_METHOD_MISMATCH);
+        }
+
+        // 1. 메뉴 리스트 조회
+        List<MenuResponseDto> menuList = menuService.getMenus(roomId);
+
+        // 2. 참여자 리스트 조회
+        List<User> participants = room.getParticipants();
+        List<VoteRoomUser> participantDtos = participants.stream()
+                .map(user -> new VoteRoomUser(user.getId(), user.getName(), user.getProfile()))
+                .toList();
+
+        boolean isHostUser = room.getUser().getId().equals(userId);
+        String selectedMenuName = room.getSelectedMenu() != null ? room.getSelectedMenu().getName() : null;
+
+        return new VoteRoomRouletteDetailResponseDto(
+                room.getId(),
+                room.getTitle(),
+                menuList,
+                participantDtos,
+                room.getTotalParticipantCount(),
+                isHostUser,
+                room.getMenuSelectMethod(),
+                selectedMenuName
+        );
     }
 
     @Override
@@ -260,5 +321,35 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         room.removeParticipant(user);
         voteRoomRepository.save(room);
         log.info("투표방 탈퇴 완료: roomId={}, userId={}", roomId, userId);
+    }
+
+    @Override
+    public void registerRouletteMenu(String roomId, VoteRoomRouletteRequestDto req, String userId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        if (req.getMenuSelectMethod() != room.getMenuSelectMethod()) {
+            log.error("투표방 룰렛 메뉴 등록 실패(메뉴 선택 방식 불일치): roomId={}, expectedMethod={}, actualMethod={}",
+                    roomId, room.getMenuSelectMethod(), req.getMenuSelectMethod());
+            throw new BabbuddyException(ErrorCode.MENU_SELECT_METHOD_MISMATCH);
+        }
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
+
+        if (!room.getUser().getId().equals(userId)) {
+            log.error("투표방 룰렛 메뉴 등록 실패(호스트 아님): roomId={}, userId={}", roomId, userId);
+            throw new BabbuddyException(ErrorCode.USER_NOT_HOST);
+        }
+
+        Menu menu = menuRepository.findById(req.getMenuId())
+                .orElseThrow(() -> {
+                    log.error("메뉴 조회 실패(룰렛 메뉴 등록 시도): menuId={}", req.getMenuId());
+                    return new BabbuddyException(ErrorCode.MENU_NOT_FOUND);
+                });
+
+        room.setSelectedMenu(menu);
+        log.info("투표방 룰렛 메뉴 등록 완료: roomId={}, menuName={}", roomId, menu.getName());
+        voteRoomRepository.save(room);
     }
 }

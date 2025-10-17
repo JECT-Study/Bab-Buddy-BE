@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, String> {
-    List<Menu> findAllById(String voteRoomId);
+    List<Menu> findAllByVoteRoomId(String voteRoomId);
 }

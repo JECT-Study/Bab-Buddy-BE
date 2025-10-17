@@ -15,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Entity
@@ -46,6 +47,11 @@ public class Menu {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+    
+    // 이 메뉴를 룰렛으로 선택한 VoteRoom (양방향 매핑)
+    @Nullable
+    @OneToOne(mappedBy = "selectedMenu")
+    private VoteRoom selectedByVoteRoom;
 
     @Builder
     public Menu(String name, VoteRoom voteRoom, User createdBy) {
@@ -56,6 +62,16 @@ public class Menu {
 
     public void changeName(String name) {
         this.name = name;
+    }
+    
+    // 이 메뉴가 룰렛으로 선택되었는지 확인
+    public boolean isSelectedByRoulette() {
+        return selectedByVoteRoom != null;
+    }
+    
+    // 이 메뉴를 룰렛으로 선택한 VoteRoom 조회
+    public VoteRoom getSelectedByVoteRoom() {
+        return selectedByVoteRoom;
     }
 
 }

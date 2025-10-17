@@ -70,6 +70,8 @@ public enum ErrorCode {
     ROOM_NOT_CLOSED(-400, "아직 종료되지 않은 투표방입니다.",-400),
     VOTE_FORBIDDEN(-400 ,"잘못된 투표입니다" ,-400),
     FORBIDDEN_MENU_UPDATE(-400 , "잘못된 메뉴 수정입니다." , -400),
+    USER_NOT_HOST(-400 , "호스트 권한이 없습니다." , -400),
+    MENU_SELECT_METHOD_MISMATCH(-400 , "메뉴 선택 방식이 일치하지 않습니다." , -400),
 
     // openAI
     OPENAI_NOT_EXIST(-500, "내용을 생성할 수 없습니다.", 500);

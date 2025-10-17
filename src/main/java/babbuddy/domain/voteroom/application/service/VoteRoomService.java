@@ -2,12 +2,15 @@ package babbuddy.domain.voteroom.application.service;
 
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
-import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRouletteRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteDetailResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomRouletteResultResponseDto;
 import java.util.List;
 
 public interface VoteRoomService {
@@ -60,6 +63,10 @@ public interface VoteRoomService {
      */
     VoteRoomResultResponseDto getVoteRoomFinalResult(String voteRoomId);
 
+    VoteRoomRouletteResultResponseDto getVoteRoomRouletteFinalResult(String voteRoomId);
+
+    VoteRoomRouletteDetailResponseDto getVoteRoomRouletteDetail(String roomId, String userId);
+
     /**
      * 투표 결과 데이터를 기반으로 메뉴 랭킹을 계산합니다.
      * 내부 로직용이며 공동 순위 및 상위 3위까지만 반환
@@ -77,4 +84,6 @@ public interface VoteRoomService {
     void joinVoteRoom(String roomId, String userId);
 
     void leaveVoteRoom(String roomId, String userId);
+
+    void registerRouletteMenu(String roomId, VoteRoomRouletteRequestDto req, String userId);
 }
