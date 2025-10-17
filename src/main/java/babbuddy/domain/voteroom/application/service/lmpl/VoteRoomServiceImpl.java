@@ -127,7 +127,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 participantDtos,
                 participants.size(),
                 votedCount,
-                room.getUser().getId().equals(userId)
+                room.getUser().getId().equals(userId),
+                room.getMenuSelectMethod()
         );
     }
 

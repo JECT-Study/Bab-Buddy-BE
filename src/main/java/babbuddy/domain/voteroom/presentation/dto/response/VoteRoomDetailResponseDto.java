@@ -1,6 +1,7 @@
 package babbuddy.domain.voteroom.presentation.dto.response;
 
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
+import babbuddy.domain.voteroom.domain.entity.MenuSelectMethod;
 import babbuddy.domain.voteroom.domain.entity.VoteStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +21,5 @@ public class VoteRoomDetailResponseDto {
     private int totalParticipants;
     private int votedParticipants;
     private boolean isHostUser;
+    private MenuSelectMethod menuSelectMethod;
 }
