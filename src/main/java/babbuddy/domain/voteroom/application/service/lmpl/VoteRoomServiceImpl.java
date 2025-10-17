@@ -143,7 +143,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
 
         VoteResultDto result = calculateRankedResult(voteRoomId); // 방금 정리한 랭킹 계산 로직
 
-        return new VoteRoomResultResponseDto(room.getId(), room.getTitle(), result);
+        return new VoteRoomResultResponseDto(room.getId(), room.getTitle(), result, room.getMenuSelectMethod());
     }
 
     @Override
