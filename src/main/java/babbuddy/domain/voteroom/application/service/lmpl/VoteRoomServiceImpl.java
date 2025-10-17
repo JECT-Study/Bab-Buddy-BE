@@ -105,8 +105,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                             room.getTitle(),
                             room.getVotestatus(),
                             room.getTotalParticipantCount(),
-                            isHostUser
-
+                            isHostUser,
+                            room.getMenuSelectMethod()
                     );
                 })
                 .toList();
