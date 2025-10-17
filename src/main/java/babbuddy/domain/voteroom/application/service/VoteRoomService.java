@@ -5,6 +5,7 @@ import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRouletteRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 
@@ -77,4 +78,6 @@ public interface VoteRoomService {
     void joinVoteRoom(String roomId, String userId);
 
     void leaveVoteRoom(String roomId, String userId);
+
+    void registerRouletteMenu(String roomId, VoteRoomRouletteRequestDto req, String userId);
 }

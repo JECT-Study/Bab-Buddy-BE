@@ -5,6 +5,7 @@ import babbuddy.domain.vote.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRequestDto;
+import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomRouletteRequestDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomDetailResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -195,5 +196,17 @@ public class VoteRoomController {
     public void leaveVoteRoom(@PathVariable String roomId,
                               @AuthenticationPrincipal String userId) {
         voteRoomService.leaveVoteRoom(roomId, userId);
+    }
+
+    @Operation(summary = "투표방에 룰렛으로 선정된 메뉴 등록", description = "투표방에 룰렛으로 선정된 메뉴를 등록하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투표방에 룰렛 메뉴 등록 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 등록했을 경우"),
+            @ApiResponse(responseCode = "404", description = "유저 없음")
+    })
+    @PostMapping("/roulette/{roomId}")
+    public void registerRouletteMenu(@PathVariable String roomId, @RequestBody VoteRoomRouletteRequestDto req,
+                                     @AuthenticationPrincipal String userId) {
+        voteRoomService.registerRouletteMenu(roomId, req, userId);
     }
 }
