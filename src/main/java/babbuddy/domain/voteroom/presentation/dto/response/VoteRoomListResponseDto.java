@@ -16,4 +16,5 @@ public class VoteRoomListResponseDto {
     private String title;
     private VoteStatus voteStatus;
     private int participantCount;
+    private Boolean isHostUser;
 }

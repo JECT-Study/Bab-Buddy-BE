@@ -55,8 +55,33 @@ public class VoteRoom {
     @OneToMany(mappedBy = "voteRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Menu> menus = new ArrayList<>();
 
+    // 투표방 참여자 목록 (호스트 포함)
+    @ManyToMany
+    @JoinTable(
+        name = "vote_room_participants",
+        joinColumns = @JoinColumn(name = "room_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> participants = new ArrayList<>();
+
     public void changeStatus(VoteStatus newStatus) {
         this.votestatus = newStatus;
     }
 
+    // 참여자 추가 메서드
+    public void addParticipant(User participant) {
+        if (!this.participants.contains(participant)) {
+            this.participants.add(participant);
+        }
+    }
+
+    // 참여자 제거 메서드
+    public void removeParticipant(User participant) {
+        this.participants.remove(participant);
+    }
+
+    // 전체 참여자 수 조회 (호스트 포함)
+    public int getTotalParticipantCount() {
+        return participants.size();
+    }
 }

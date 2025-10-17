@@ -46,11 +46,14 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     public String createVoteRoom(VoteRoomRequestDto dto, String userId) {
 
         User user = userRepository.findById(userId).orElse(null);
+        List<User> participants = new ArrayList<>();
+        participants.add(user);
         VoteRoom voteRoom = VoteRoom.builder()
                 .title(dto.getTitle())
                 .votestatus(VoteStatus.ONGOING)
                 .menuSelectMethod(dto.getMenuSelectMethod())
                 .user(user)
+                .participants(participants)
                 .build();
         VoteRoom saved = voteRoomRepository.save(voteRoom);
         log.info("투표방 생성 완료: roomId={}, title={}", saved.getId(), saved.getTitle());
@@ -82,18 +85,21 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     }
 
     @Override
-    public List<VoteRoomListResponseDto> getVoteRoomList() {
+    public List<VoteRoomListResponseDto> getVoteRoomList(String userId) {
         List<VoteRoom> rooms = voteRoomRepository.findAll();
+
 
         return rooms.stream()
                 .map(room -> {
-                    int participantCount = voteRepository.countDistinctUsersByRoomId(room.getId());
+                    Boolean isHostUser = room.getUser().getId().equals(userId);
 
                     return new VoteRoomListResponseDto(
                             room.getId(),
                             room.getTitle(),
                             room.getVotestatus(),
-                            participantCount
+                            room.getTotalParticipantCount(),
+                            isHostUser
+
                     );
                 })
                 .toList();
@@ -108,7 +114,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         List<MenuResponseDto> menuList = menuService.getMenus(roomId);
 
         // 2. 참여자 리스트 조회
-        List<User> participants = voteRepository.findParticipantsByRoomId(roomId);
+        List<User> participants = room.getParticipants();
         List<VoteRoomUser> participantDtos = participants.stream()
                 .map(user -> new VoteRoomUser(user.getId(), user.getName(), user.getProfile()))
                 .toList();
@@ -125,7 +131,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 String.valueOf(room.getVotestatus()).toUpperCase(),
                 menuList,
                 participantDtos,
-                participants.size(),
+                room.getTotalParticipantCount(),
                 votedCount,
                 room.getUser().getId().equals(userId),
                 room.getMenuSelectMethod()
@@ -230,6 +236,29 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         voteRoomDislikeFoodRepository.delete(dislikeFood);
     }
 
+    @Override
+    public void joinVoteRoom(String roomId, String userId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
 
+        room.addParticipant(user);
+        voteRoomRepository.save(room);
+        log.info("투표방 참여 완료: roomId={}, userId={}", roomId, userId);
+    }
+
+    @Override
+    public void leaveVoteRoom(String roomId, String userId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
+
+        room.removeParticipant(user);
+        voteRoomRepository.save(room);
+        log.info("투표방 탈퇴 완료: roomId={}, userId={}", roomId, userId);
+    }
 }
