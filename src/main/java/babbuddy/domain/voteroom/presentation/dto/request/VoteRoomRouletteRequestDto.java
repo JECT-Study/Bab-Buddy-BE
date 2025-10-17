@@ -13,5 +13,5 @@ public class VoteRoomRouletteRequestDto {
     private MenuSelectMethod menuSelectMethod;
 
     @NotNull(message = "메뉴 아이디는 필수입니다.")
-    private String menuId;
+    private String menuName;
 }
