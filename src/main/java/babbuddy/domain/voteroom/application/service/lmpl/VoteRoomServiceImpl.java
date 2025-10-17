@@ -98,7 +98,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
 
         return rooms.stream()
                 .map(room -> {
-                    Boolean isHostUser = room.getUser().getId().equals(userId);
+                    Boolean isHostUser = room.getUser() != null && room.getUser().getId().equals(userId);
 
                     return new VoteRoomListResponseDto(
                             room.getId(),
@@ -141,7 +141,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 participantDtos,
                 room.getTotalParticipantCount(),
                 votedCount,
-                room.getUser().getId().equals(userId),
+                room.getUser() != null && room.getUser().getId().equals(userId),
                 room.getMenuSelectMethod(),
                 votedMenuName
         );
@@ -198,7 +198,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 .map(user -> new VoteRoomUser(user.getId(), user.getName(), user.getProfile()))
                 .toList();
 
-        boolean isHostUser = room.getUser().getId().equals(userId);
+        boolean isHostUser = room.getUser() != null && room.getUser().getId().equals(userId);
         String selectedMenuName = room.getSelectedMenu() != null ? room.getSelectedMenu().getName() : null;
 
         return new VoteRoomRouletteDetailResponseDto(
@@ -337,14 +337,14 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
 
-        if (!room.getUser().getId().equals(userId)) {
+        if (room.getUser() == null || !room.getUser().getId().equals(userId)) {
             log.error("투표방 룰렛 메뉴 등록 실패(호스트 아님): roomId={}, userId={}", roomId, userId);
             throw new BabbuddyException(ErrorCode.USER_NOT_HOST);
         }
 
-        Menu menu = menuRepository.findById(req.getMenuId())
+        Menu menu = menuRepository.findByNameAndVoteRoomId(req.getMenuName(), roomId)
                 .orElseThrow(() -> {
-                    log.error("메뉴 조회 실패(룰렛 메뉴 등록 시도): menuId={}", req.getMenuId());
+                    log.error("메뉴 조회 실패(룰렛 메뉴 등록 시도): menuName={}", req.getMenuName());
                     return new BabbuddyException(ErrorCode.MENU_NOT_FOUND);
                 });
 
