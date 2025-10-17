@@ -88,7 +88,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuResponseDto> getMenus(String voteRoomId) {
-        List<Menu> menus = menuRepository.findAllById(voteRoomId);
+        List<Menu> menus = menuRepository.findAllByVoteRoomId(voteRoomId);
 
         return menus.stream()
                 .map(menu -> new MenuResponseDto(
