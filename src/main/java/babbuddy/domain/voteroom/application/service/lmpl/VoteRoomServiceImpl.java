@@ -245,6 +245,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
 
         room.addParticipant(user);
+        voteRoomRepository.save(room);
         log.info("투표방 참여 완료: roomId={}, userId={}", roomId, userId);
     }
 
@@ -257,6 +258,7 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                 .orElseThrow(() -> new BabbuddyException(ErrorCode.USER_NOT_FOUND));
 
         room.removeParticipant(user);
+        voteRoomRepository.save(room);
         log.info("투표방 탈퇴 완료: roomId={}, userId={}", roomId, userId);
     }
 }
