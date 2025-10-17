@@ -11,6 +11,7 @@ import babbuddy.domain.vote.presentation.dto.response.MenuInfoDto;
 import babbuddy.domain.vote.presentation.dto.response.RankedMenuGroupDto;
 import babbuddy.domain.vote.presentation.dto.response.VoteResultDto;
 import babbuddy.domain.voteroom.domain.entity.MenuSelectMethod;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomMenuSelectMethodResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.domain.entity.VoteRoom;
@@ -105,8 +106,8 @@ public class VoteRoomServiceImpl implements VoteRoomService {
                             room.getTitle(),
                             room.getVotestatus(),
                             room.getTotalParticipantCount(),
-                            isHostUser
-
+                            isHostUser,
+                            room.getMenuSelectMethod()
                     );
                 })
                 .toList();
@@ -351,5 +352,13 @@ public class VoteRoomServiceImpl implements VoteRoomService {
         room.setSelectedMenu(menu);
         log.info("투표방 룰렛 메뉴 등록 완료: roomId={}, menuName={}", roomId, menu.getName());
         voteRoomRepository.save(room);
+    }
+
+    @Override
+    public VoteRoomMenuSelectMethodResponseDto getMenuSelectMethod(String roomId) {
+        VoteRoom room = voteRoomRepository.findById(roomId)
+                .orElseThrow(() -> new BabbuddyException(ErrorCode.ROOM_NOT_FOUND));
+
+        return new VoteRoomMenuSelectMethodResponseDto(room.getMenuSelectMethod());
     }
 }

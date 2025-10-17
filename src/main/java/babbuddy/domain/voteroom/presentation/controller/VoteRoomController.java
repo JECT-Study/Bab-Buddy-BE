@@ -1,6 +1,7 @@
 package babbuddy.domain.voteroom.presentation.controller;
 
 import babbuddy.domain.menu.presentation.dto.response.MenuResponseDto;
+import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomMenuSelectMethodResponseDto;
 import babbuddy.domain.voteroom.presentation.dto.response.VoteRoomResultResponseDto;
 import babbuddy.domain.voteroom.application.service.VoteRoomService;
 import babbuddy.domain.voteroom.presentation.dto.request.VoteRoomDislikeRequestDto;
@@ -236,5 +237,10 @@ public class VoteRoomController {
     public VoteRoomRouletteResultResponseDto getVoteRoomRouletteResult(@PathVariable String roomId) {
         return voteRoomService.getVoteRoomRouletteFinalResult(roomId);
     }
+
+    @Operation(summary = "menuSelectMethod 값 반환", description = "투표방의 menuSelectMethod 값을 반환하는 API")
+    @GetMapping("/menu-select-method/{roomId}")
+    public VoteRoomMenuSelectMethodResponseDto getMenuSelectMethod(@PathVariable String roomId) {
+        return voteRoomService.getMenuSelectMethod(roomId);}
 
 }
