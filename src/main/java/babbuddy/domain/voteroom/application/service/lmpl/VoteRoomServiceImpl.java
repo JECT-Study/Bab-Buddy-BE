@@ -82,18 +82,22 @@ public class VoteRoomServiceImpl implements VoteRoomService {
     }
 
     @Override
-    public List<VoteRoomListResponseDto> getVoteRoomList() {
+    public List<VoteRoomListResponseDto> getVoteRoomList(String userId) {
         List<VoteRoom> rooms = voteRoomRepository.findAll();
+
 
         return rooms.stream()
                 .map(room -> {
                     int participantCount = voteRepository.countDistinctUsersByRoomId(room.getId());
+                    Boolean isHostUser = room.getUser().getId().equals(userId);
 
                     return new VoteRoomListResponseDto(
                             room.getId(),
                             room.getTitle(),
                             room.getVotestatus(),
-                            participantCount
+                            participantCount,
+                            isHostUser
+
                     );
                 })
                 .toList();

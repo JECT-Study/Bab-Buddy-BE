@@ -40,7 +40,7 @@ public interface VoteRoomService {
      *
      * @return 투표방 목록 DTO 리스트
      */
-    List<VoteRoomListResponseDto> getVoteRoomList();
+    List<VoteRoomListResponseDto> getVoteRoomList(String userId);
 
     /**
      * 투표방의 상세 정보를 조회합니다.

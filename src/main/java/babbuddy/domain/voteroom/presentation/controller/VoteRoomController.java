@@ -93,8 +93,8 @@ public class VoteRoomController {
             @ApiResponse(responseCode = "404", description = "유저 없음")
     })
     @GetMapping
-    public ResponseEntity<List<VoteRoomListResponseDto>> getVoteRoomList() {
-        List<VoteRoomListResponseDto> rooms = voteRoomService.getVoteRoomList();
+    public ResponseEntity<List<VoteRoomListResponseDto>> getVoteRoomList(@AuthenticationPrincipal String userId) {
+        List<VoteRoomListResponseDto> rooms = voteRoomService.getVoteRoomList(userId);
         return ResponseEntity.ok(rooms);
     }
 
